@@ -1,5 +1,13 @@
 # Arena Rush — protótipo 3D
 
+## Baixar a beta para Windows
+
+[Baixar beta 0.1.0 (Windows 64 bits)](https://github.com/Theuus12/chaosboundprototipe/releases/download/v0.1.0-beta/Chaosbound-Beta-0.1.0-Windows-x64.zip).
+
+Extraia o ZIP e abra `Chaosbound-Beta.exe`. Nao e necessario instalar a Godot. A beta usa arte provisoria e balanceamento experimental. Controles e requisitos estao no `LEIA-ME.txt` incluido. O executavel ainda nao possui assinatura digital.
+
+O preset `export_presets.cfg` exporta para Windows x86_64 com os dados embutidos no EXE. Para reproduzir, use a Godot 4.7.2 e coloque o template oficial `windows_release_x86_64.exe` em `tools/templates/`. Execute `Godot --headless --path . --export-release "Windows Beta" builds/beta/Chaosbound-Beta.exe`. Crie antes a pasta de destino. Binarios ficam em `builds/`, fora do historico Git; downloads sao distribuidos nas Releases.
+
 ## Interface e controles atuais
 
 Sobrevivencia atual: contador de 10 minutos no topo, depois tempo extra. Aos 15 minutos de partida, vida e dano dos monstros ficam em 2x; aos 20, 4x; aos 25, 8x. Monstros comecam a metade da velocidade base do jogador (4,5 m/s), e dificuldade/tempo aumentam ate o limite da velocidade base do jogador (9 m/s), sem incluir buff de movimento. Monstros atuais e futuros recebem a escala. Esc mostra todos os atributos nos slots das armas; Ctrl + clique aumenta todos os atributos locais em +1 e o nivel em um. `APRESENTACAO_LINKEDIN.txt` traz contexto para gerar uma apresentacao curta do projeto.

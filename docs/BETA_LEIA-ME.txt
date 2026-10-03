@@ -1,0 +1,21 @@
+CHAOSBOUND PROTOTYPE — BETA 0.1.0
+
+Como jogar:
+1. Extraia todos os arquivos do ZIP para uma pasta.
+2. Abra Chaosbound-Beta.exe. Nao e necessario instalar a Godot.
+
+Controles:
+WASD: andar
+Mouse: girar camera
+Espaco: pular
+Esc: inventario e status / voltar ao jogo
+Enter: reiniciar apos morrer
+
+Ataques sao automaticos. Colete XP para subir de nivel e escolha melhorias.
+Voce comeca com o arco; corte frontal e aura podem aparecer nas escolhas.
+
+Esta e uma versao beta em desenvolvimento, com arte provisoria e balanceamento experimental.
+Windows 64 bits, com suporte a OpenGL 3.3 ou superior.
+O executavel ainda nao possui assinatura digital de publicador.
+
+Feedback e codigo: https://github.com/Theuus12/chaosboundprototipe
