@@ -3,6 +3,7 @@ extends Node3D
 var direction: Vector3 = Vector3.FORWARD
 var speed: float = 32.0
 var lifetime: float = 3.0
+var damage: int = 100
 
 func _ready() -> void:
 	add_to_group("arrows")
@@ -35,8 +36,7 @@ func _physics_process(delta: float) -> void:
 	if not hit.is_empty():
 		var collider := hit.collider as Node
 		if collider and collider.is_in_group("enemies") and collider.has_method("take_damage"):
-			# Um acerto mata somente o primeiro monstro atingido.
-			collider.call("take_damage", collider.get("health"))
+			collider.call("take_damage", damage)
 		queue_free()
 		return
 	global_position = next

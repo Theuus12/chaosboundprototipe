@@ -25,6 +25,7 @@ func run() -> void:
 		quit(1)
 		return
 	var player := arena.get("player") as CharacterBody3D
+	player.set("slash_left", 10000.0)
 	player.set("shot_left", 10000.0)
 	var enemy := enemies[0] as CharacterBody3D
 	var initial_distance := enemy.global_position.distance_to(player.global_position)
@@ -33,7 +34,7 @@ func run() -> void:
 		await physics_frame
 	check(enemy.global_position.distance_to(player.global_position) < initial_distance, "Inimigo deve se aproximar do jogador")
 	enemy.call("take_damage", 10)
-	check(enemy.get("health") == 20, "Dano deve reduzir vida do inimigo")
+	check(enemy.get("health") == 90, "Dano deve reduzir vida do inimigo")
 	player.global_position = Vector3.ZERO
 	player.velocity = Vector3.ZERO
 	enemy.global_position = Vector3(0.85, 0, 0)
@@ -50,7 +51,7 @@ func run() -> void:
 	for i in range(10):
 		await physics_frame
 	check(player.global_position.is_equal_approx(dead_position), "Jogador morto deve parar")
-	enemy.call("take_damage", 30)
+	enemy.call("take_damage", 100)
 	await process_frame
 	check(get_nodes_in_group("enemies").is_empty(), "Inimigo sem vida deve ser removido")
 	print("Combat smoke: ", "PASS" if failures == 0 else "FAIL (%d)" % failures)

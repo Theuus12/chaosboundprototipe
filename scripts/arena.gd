@@ -1,13 +1,10 @@
 extends Node3D
 
 var player: CharacterBody3D
-var status: Label
-var health_ui: ProgressBar
-var xp_ui: ProgressBar
-var xp_label: Label
-var death_message: Label
 var navigation: NavigationRegion3D
 var spawn_left: float = 1.0
+var elapsed_time: float = 0.0
+var overtime_stage: int = 0
 @export var spawn_interval: float = 1.8
 @export var max_enemies: int = 25
 @export var spawn_min_distance: float = 8.0
@@ -50,64 +47,62 @@ func _ready() -> void:
 	player = preload("res://scenes/player.tscn").instantiate()
 	player.position = Vector3(0, 2, 0)
 	add_child(player)
+	player.connect("difficulty_changed", update_difficulty)
 	var hud := CanvasLayer.new()
+	hud.name = "GameHUD"
+	hud.set_script(preload("res://scripts/game_hud.gd"))
+	hud.set("player", player)
 	add_child(hud)
-	var panel := PanelContainer.new()
-	panel.position = Vector2(20, 20)
-	hud.add_child(panel)
-	var margin := MarginContainer.new()
-	for side in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 14)
-	panel.add_child(margin)
-	var column := VBoxContainer.new()
-	margin.add_child(column)
-	var title := Label.new()
-	title.text = "ARENA RUSH | Laboratorio de movimento"
-	title.add_theme_font_size_override("font_size", 22)
-	column.add_child(title)
-	var controls := Label.new()
-	controls.text = "WASD: mover | Mouse: camera | Espaco: saltar\nShift: correr | Q: dash | R: voltar ao inicio\nEsc: soltar/capturar mouse | Clique: capturar mouse"
-	column.add_child(controls)
-	status = Label.new()
-	column.add_child(status)
-	health_ui = ProgressBar.new()
-	health_ui.custom_minimum_size = Vector2(360, 24)
-	health_ui.max_value = player.get("max_health")
-	health_ui.show_percentage = false
-	column.add_child(health_ui)
-	xp_label = Label.new()
-	column.add_child(xp_label)
-	xp_ui = ProgressBar.new()
-	xp_ui.custom_minimum_size = Vector2(360, 18)
-	xp_ui.max_value = 100
-	xp_ui.show_percentage = false
-	var xp_style := StyleBoxFlat.new()
-	xp_style.bg_color = Color("40a4ff")
-	xp_style.set_corner_radius_all(4)
-	xp_ui.add_theme_stylebox_override("fill", xp_style)
-	column.add_child(xp_ui)
-	death_message = Label.new()
-	death_message.text = "VOCE MORREU — pressione Enter para reiniciar"
-	death_message.add_theme_color_override("font_color", Color("ff7979"))
-	death_message.visible = false
-	column.add_child(death_message)
+	var upgrade_menu := CanvasLayer.new()
+	upgrade_menu.name = "UpgradeMenu"
+	upgrade_menu.set_script(preload("res://scripts/upgrade_menu.gd"))
+	upgrade_menu.set("player", player)
+	add_child(upgrade_menu)
+	var stats_menu := CanvasLayer.new()
+	stats_menu.name = "StatsMenu"
+	stats_menu.set_script(preload("res://scripts/stats_menu.gd"))
+	stats_menu.set("player", player)
+	add_child(stats_menu)
 
-func _process(_delta: float) -> void:
-	if is_instance_valid(player):
-		status.text = "Vida: %d/%d | Inimigos: %d\nVelocidade: %.1f m/s | Dash: %.1f s" % [player.get("health"), player.get("max_health"), get_tree().get_nodes_in_group("enemies").size(), Vector2(player.velocity.x, player.velocity.z).length(), player.get("cooldown_left")]
-		health_ui.value = player.get("health")
-		xp_ui.value = player.get("xp")
-		xp_label.text = "Nivel %d | XP: %d/100 | Bonus amarelos: %d" % [player.get("level"), player.get("xp"), player.get("bonus_orbs")]
-		death_message.visible = player.get("dead")
+func spawn_magnet(pos: Vector3) -> void:
+	var magnet := Node3D.new()
+	magnet.set_script(preload("res://scripts/magnet.gd"))
+	magnet.set("target", player)
+	magnet.position = pos
+	add_child(magnet)
 
 func _physics_process(delta: float) -> void:
 	if not is_instance_valid(player) or player.get("dead"):
 		return
 	spawn_left -= delta
+	elapsed_time += delta
+	var next_stage := maxi(0, int((elapsed_time - 600.0) / 300.0))
+	if next_stage != overtime_stage:
+		overtime_stage = next_stage
+		update_difficulty(player.get("difficulty_bonus"))
 	if spawn_left <= 0.0:
-		spawn_left = spawn_interval
-		if get_tree().get_nodes_in_group("enemies").size() < max_enemies:
-			spawn_enemy()
+		spawn_left = effective_spawn_interval()
+		spawn_wave()
+
+func effective_wave_size() -> int:
+	return 1 + int(player.get("difficulty_bonus") * 3 / 10.0)
+
+func spawn_wave() -> void:
+	var remaining := effective_enemy_limit() - get_tree().get_nodes_in_group("enemies").size()
+	for i in range(mini(effective_wave_size(), remaining)):
+		spawn_enemy()
+
+func effective_spawn_interval() -> float:
+	return spawn_interval / (1.0 + player.get("difficulty_bonus") / 100.0)
+
+func effective_enemy_limit() -> int:
+	return ceili(max_enemies * (1.0 + player.get("difficulty_bonus") / 100.0))
+
+func update_difficulty(total_percent: int) -> void:
+	spawn_left = minf(spawn_left, effective_spawn_interval())
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		if not enemy.is_queued_for_deletion():
+			enemy.call("apply_difficulty", total_percent, overtime_multiplier())
 
 func _unhandled_input(event: InputEvent) -> void:
 	if is_instance_valid(player) and player.get("dead") and event.is_action_pressed("restart"):
@@ -143,6 +138,7 @@ func spawn_enemy() -> void:
 		enemy.set("target", player)
 		enemy.position = point + Vector3.UP * 0.1
 		add_child(enemy)
+		enemy.call("apply_difficulty", player.get("difficulty_bonus"), overtime_multiplier())
 		return
 
 func add_box(pos: Vector3, size: Vector3, color: Color) -> void:
@@ -164,10 +160,18 @@ func add_box(pos: Vector3, size: Vector3, color: Color) -> void:
 	navigation.add_child(body)
 
 func configure_input() -> void:
-	var bindings := {"forward": KEY_W, "back": KEY_S, "left": KEY_A, "right": KEY_D, "jump": KEY_SPACE, "sprint": KEY_SHIFT, "dash": KEY_Q, "reset": KEY_R, "release_mouse": KEY_ESCAPE, "restart": KEY_ENTER}
+	if not InputMap.has_action("stats"):
+		InputMap.add_action("stats")
+		var tab := InputEventKey.new()
+		tab.physical_keycode = KEY_ESCAPE
+		InputMap.action_add_event("stats", tab)
+	var bindings := {"forward": KEY_W, "back": KEY_S, "left": KEY_A, "right": KEY_D, "jump": KEY_SPACE, "reset": KEY_R, "restart": KEY_ENTER}
 	for action in bindings:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)
 		var event := InputEventKey.new()
 		event.physical_keycode = bindings[action]
 		InputMap.action_add_event(action, event)
+
+func overtime_multiplier() -> float:
+	return pow(2.0, overtime_stage)

@@ -1,6 +1,7 @@
 extends Node3D
 
 var bonus: bool = false
+var magnetized: bool = false
 var target: CharacterBody3D
 var phase: float = 0.0
 var visual: MeshInstance3D
@@ -30,8 +31,8 @@ func _physics_process(delta: float) -> void:
 		return
 	var destination := target.global_position + Vector3.UP * 0.45
 	var distance := global_position.distance_to(destination)
-	if distance < 2.2:
-		global_position = global_position.move_toward(destination, 7.0 * delta)
+	if distance < 2.2 or magnetized:
+		global_position = global_position.move_toward(destination, (18.0 if magnetized else 7.0) * delta)
 	if global_position.distance_to(destination) < 0.65:
 		if bonus:
 			target.call("collect_bonus")

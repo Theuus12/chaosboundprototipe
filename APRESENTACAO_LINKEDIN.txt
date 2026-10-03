@@ -1,0 +1,14 @@
+Crie uma apresentacao breve em portugues para o LinkedIn sobre este projeto pessoal em desenvolvimento. Use 120 a 180 palavras, tom natural e poucas hashtags. Nao invente resultados, numero de usuarios, experiencia profissional ou metricas. Apresente como prototipo, nao jogo finalizado.
+
+Nome de trabalho: Arena Rush / Chaosbound Prototype.
+Tecnologia: Godot 4 e GDScript, jogo 3D para Windows.
+Repositorio: https://github.com/Theuus12/chaosboundprototipe
+Inspiracao de gameplay: jogos de sobrevivencia com ataques automaticos, como Megabonk.
+
+Implementado: movimento em terceira pessoa e salto; monstros que perseguem e atacam por contato; arco com flechas em sequencia; corte frontal e aura circular desbloqueaveis; melhorias individuais de dano, velocidade, area e quantidade conforme a arma; experiencia coletavel; tres escolhas por nivel; buffs acumulativos; cinco raridades e sistema de sorte; quatro slots de armas/itens e quatro de buffs; ima raro que atrai XP do mapa; contador de kills; menu de status; comandos de desenvolvedor e testes automatizados.
+
+Sobrevivencia: contador inicial de dez minutos. Aos 15 minutos, vida e dano dos monstros dobram; aos 20, quadruplicam, seguindo a cada cinco minutos. Velocidade inicial dos monstros e metade da velocidade base do jogador, limitada a essa velocidade base mesmo na escalada.
+
+Arte provisoria feita com geometria simples. Projeto desenvolvido com apoio de assistente de IA: nao alegar que tudo foi feito manualmente. O foco da apresentacao e a evolucao do prototipo, mecanicas de gameplay e aprendizado. Termine convidando a acompanhar o desenvolvimento ou compartilhar feedback.
+
+O GitHub recebeu uma versao inicial; atualizacoes recentes podem ainda estar somente locais. Nao prometer que todas as mecanicas descritas ja estao publicadas no repositorio.

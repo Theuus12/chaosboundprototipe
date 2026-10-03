@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
-@export var move_speed: float = 6.0
-@export var max_health: int = 30
+@export var move_speed: float = 4.5
+@export var max_health: int = 100
 @export var contact_damage: int = 10
 var health: int
 var target: CharacterBody3D
@@ -100,17 +100,33 @@ func take_damage(amount: int) -> void:
 	hit_flash = 0.12
 	health_bar.call("set_health", health, max_health)
 	if health == 0:
+		if randf() < 0.01 and is_instance_valid(target):
+			get_tree().current_scene.call("spawn_magnet", global_position + Vector3.UP * 0.45)
+		if is_instance_valid(target):
+			target.set("kills", target.get("kills") + 1)
 		drop_loot()
 		queue_free()
+
+func apply_difficulty(total_percent: int, overtime_multiplier: float = 1.0) -> void:
+	var ratio := float(health) / max_health
+	var multiplier := 1.0 + total_percent / 100.0
+	var base_speed: float = target.get("move_speed") if is_instance_valid(target) else 9.0
+	move_speed = minf(base_speed, base_speed * 0.5 * multiplier * overtime_multiplier)
+	max_health = roundi((100 + total_percent) * overtime_multiplier)
+	contact_damage = roundi(10 * overtime_multiplier)
+	health = ceili(max_health * ratio)
+	health_bar.call("set_health", health, max_health)
 
 func drop_loot(roll: float = -1.0) -> void:
 	if roll < 0.0:
 		roll = randf()
-	if roll >= 0.9:
-		return
-	spawn_pickup(false, Vector3(-0.25, 0.3, 0))
-	if roll >= 0.6:
-		spawn_pickup(true, Vector3(0.25, 0.3, 0))
+	if roll < 0.9:
+		spawn_pickup(false, Vector3(-0.25, 0.3, 0))
+		if roll >= 0.6:
+			spawn_pickup(true, Vector3(0.25, 0.3, 0))
+	# Sorteio independente: nao altera as chances originais de loot.
+	if is_instance_valid(target) and randf() < target.get("extra_xp_chance") / 100.0:
+		spawn_pickup(false, Vector3(0, 0.3, 0.35))
 
 func spawn_pickup(bonus: bool, offset: Vector3) -> void:
 	var pickup := Node3D.new()

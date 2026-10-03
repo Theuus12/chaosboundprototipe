@@ -9,6 +9,7 @@ func run() -> void:
 	current_scene = arena
 	arena.set("spawn_left", 10000.0)
 	var player := arena.get("player") as CharacterBody3D
+	player.set("slash_left", 10000.0)
 	player.set("shot_left", 10000.0)
 	player.set("damage_grace_left", 10000.0)
 	for i in range(10):
