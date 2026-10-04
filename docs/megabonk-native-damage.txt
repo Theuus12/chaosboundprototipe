@@ -1,0 +1,834 @@
+
+GetDamage RVA=34f9c0
+18034f9c0 sub rsp, 0x38
+18034f9c4 cmp byte ptr [rip + 0x2e2264e], 0
+18034f9cb jne 0x18034f9e0
+18034f9cd lea rcx, [rip + 0x2c2dd6c] ; float=1.0889045650208977e-19
+18034f9d4 call 0x1802696c0
+18034f9d9 mov byte ptr [rip + 0x2e22639], 1
+18034f9e0 mov rcx, qword ptr [rip + 0x2c2dd59] ; float=1.0889045650208977e-19
+18034f9e7 mov dword ptr [rsp + 0x20], 0
+18034f9ef mov dword ptr [rsp + 0x58], 0
+18034f9f7 mov dword ptr [rsp + 0x50], 0
+18034f9ff cmp dword ptr [rcx + 0xe4], 0
+18034fa06 jne 0x18034fa0d
+18034fa08 call 0x1802699a0
+18034fa0d xor r9d, r9d
+18034fa10 lea r8, [rsp + 0x50]
+18034fa15 lea rdx, [rsp + 0x58]
+18034fa1a lea rcx, [rsp + 0x20]
+18034fa1f call 0x18046f320
+18034fa24 addss xmm0, dword ptr [rip + 0x22df250] ; float=1.0
+18034fa2c mulss xmm0, dword ptr [rip + 0x22df3b4] ; float=18.0
+18034fa34 add rsp, 0x38
+18034fa38 ret 
+
+GetDamage RVA=34dc90
+18034dc90 sub rsp, 0x38
+18034dc94 cmp byte ptr [rip + 0x2e24386], 0
+18034dc9b jne 0x18034dcb0
+18034dc9d lea rcx, [rip + 0x2c2fa9c] ; float=1.0889045650208977e-19
+18034dca4 call 0x1802696c0
+18034dca9 mov byte ptr [rip + 0x2e24371], 1
+18034dcb0 mov rcx, qword ptr [rip + 0x2c2fa89] ; float=1.0889045650208977e-19
+18034dcb7 mov dword ptr [rsp + 0x20], 0
+18034dcbf mov dword ptr [rsp + 0x58], 0
+18034dcc7 mov dword ptr [rsp + 0x50], 0
+18034dccf cmp dword ptr [rcx + 0xe4], 0
+18034dcd6 jne 0x18034dcdd
+18034dcd8 call 0x1802699a0
+18034dcdd xor r9d, r9d
+18034dce0 lea r8, [rsp + 0x50]
+18034dce5 lea rdx, [rsp + 0x58]
+18034dcea lea rcx, [rsp + 0x20]
+18034dcef call 0x18046f320
+18034dcf4 addss xmm0, dword ptr [rip + 0x22e0f80] ; float=1.0
+18034dcfc mulss xmm0, dword ptr [rip + 0x22e10e4] ; float=18.0
+18034dd04 add rsp, 0x38
+18034dd08 ret 
+
+GetDamage RVA=34e9b0
+18034e9b0 sub rsp, 0x38
+18034e9b4 cmp byte ptr [rip + 0x2e2366d], 0
+18034e9bb jne 0x18034e9d0
+18034e9bd lea rcx, [rip + 0x2c2ed7c] ; float=1.0889045650208977e-19
+18034e9c4 call 0x1802696c0
+18034e9c9 mov byte ptr [rip + 0x2e23658], 1
+18034e9d0 mov rcx, qword ptr [rip + 0x2c2ed69] ; float=1.0889045650208977e-19
+18034e9d7 mov dword ptr [rsp + 0x20], 0
+18034e9df mov dword ptr [rsp + 0x58], 0
+18034e9e7 mov dword ptr [rsp + 0x50], 0
+18034e9ef cmp dword ptr [rcx + 0xe4], 0
+18034e9f6 jne 0x18034e9fd
+18034e9f8 call 0x1802699a0
+18034e9fd xor r9d, r9d
+18034ea00 lea r8, [rsp + 0x50]
+18034ea05 lea rdx, [rsp + 0x58]
+18034ea0a lea rcx, [rsp + 0x20]
+18034ea0f call 0x18046f320
+18034ea14 addss xmm0, dword ptr [rip + 0x22e0260] ; float=1.0
+18034ea1c mulss xmm0, dword ptr [rip + 0x22e03c4] ; float=18.0
+18034ea24 add rsp, 0x38
+18034ea28 ret 
+
+GetDamage RVA=383b10
+180383b10 movd xmm0, dword ptr [rcx + 0x64]
+180383b15 cvtdq2ps xmm0, xmm0
+180383b18 ret 
+
+GetDamage RVA=41b290
+18041b290 push rbx
+18041b292 sub rsp, 0x70
+18041b296 cmp byte ptr [rip + 0x2d57482], 0
+18041b29d mov rbx, rcx
+18041b2a0 movaps xmmword ptr [rsp + 0x30], xmm9
+18041b2a6 jne 0x18041b2c7
+18041b2a8 lea rcx, [rip + 0x2b62491] ; float=1.0889045650208977e-19
+18041b2af call 0x1802696c0
+18041b2b4 lea rcx, [rip + 0x2b3db4d] ; float=1.0904139111448655e-19
+18041b2bb call 0x1802696c0
+18041b2c0 mov byte ptr [rip + 0x2d57458], 1
+18041b2c7 mov qword ptr [rsp + 0x88], rdi
+18041b2cf xorps xmm9, xmm9
+18041b2d3 mov dword ptr [rsp + 0x98], 0
+18041b2de mov dword ptr [rsp + 0x90], 0
+18041b2e9 mov dword ptr [rsp + 0x80], 0
+18041b2f4 test rbx, rbx
+18041b2f7 je 0x18041b436
+18041b2fd mov rax, qword ptr [rbx + 0x20]
+18041b301 test rax, rax
+18041b304 je 0x18041b436
+18041b30a mov edi, dword ptr [rax + 0x64]
+18041b30d mov rax, qword ptr [rip + 0x2b3daf4] ; float=1.0904139111448655e-19
+18041b314 cmp dword ptr [rax + 0xe4], 0
+18041b31b jne 0x18041b32c
+18041b31d mov rcx, rax
+18041b320 call 0x1802699a0
+18041b325 mov rax, qword ptr [rip + 0x2b3dadc] ; float=1.0904139111448655e-19
+18041b32c mov rax, qword ptr [rax + 0xb8]
+18041b333 mov rcx, qword ptr [rax + 0x30]
+18041b337 test rcx, rcx
+18041b33a je 0x18041b436
+18041b340 movaps xmmword ptr [rsp + 0x60], xmm6
+18041b345 xor r8d, r8d
+18041b348 movaps xmmword ptr [rsp + 0x50], xmm7
+18041b34d movd xmm1, edi
+18041b351 movaps xmmword ptr [rsp + 0x40], xmm8
+18041b357 cvtdq2ps xmm1, xmm1
+18041b35a movaps xmmword ptr [rsp + 0x20], xmm10
+18041b360 call 0x1804811c0
+18041b365 xor edx, edx
+18041b367 mov ecx, 0x36
+18041b36c movaps xmm7, xmm0
+18041b36f call 0x18042b6a0
+18041b374 mov rcx, qword ptr [rip + 0x2b623c5] ; float=1.0889045650208977e-19
+18041b37b movaps xmm10, xmm0
+18041b37f cmp dword ptr [rcx + 0xe4], 0
+18041b386 jne 0x18041b38d
+18041b388 call 0x1802699a0
+18041b38d xor r9d, r9d
+18041b390 lea r8, [rsp + 0x80]
+18041b398 lea rdx, [rsp + 0x90]
+18041b3a0 lea rcx, [rsp + 0x98]
+18041b3a8 call 0x18046f320
+18041b3ad xor edx, edx
+18041b3af mov ecx, 0x26
+18041b3b4 movaps xmm6, xmm0
+18041b3b7 call 0x18042b6a0
+18041b3bc addss xmm6, dword ptr [rip + 0x22138b8] ; float=1.0
+18041b3c4 movaps xmm8, xmm0
+18041b3c8 xor edx, edx
+18041b3ca mov rcx, rbx
+18041b3cd addss xmm8, xmm6
+18041b3d2 call 0x1804aeae0
+18041b3d7 movaps xmm6, xmmword ptr [rsp + 0x60]
+18041b3dc test al, al
+18041b3de je 0x18041b3e9
+18041b3e0 mulss xmm8, dword ptr [rip + 0x221389b] ; float=1.5
+18041b3e9 mulss xmm7, xmm8
+18041b3ee movaps xmm8, xmmword ptr [rsp + 0x40]
+18041b3f4 mulss xmm7, xmm10
+18041b3f9 movaps xmm10, xmmword ptr [rsp + 0x20]
+18041b3ff comiss xmm9, xmm7
+18041b403 ja 0x18041b417
+18041b405 movss xmm0, dword ptr [rip + 0x22138ef] ; float=3.4028234663852886e+38
+18041b40d comiss xmm7, xmm0
+18041b410 jbe 0x18041b41a
+18041b412 movaps xmm7, xmm0
+18041b415 jmp 0x18041b41a
+18041b417 xorps xmm7, xmm7
+18041b41a mov rdi, qword ptr [rsp + 0x88]
+18041b422 movaps xmm0, xmm7
+18041b425 movaps xmm7, xmmword ptr [rsp + 0x50]
+18041b42a movaps xmm9, xmmword ptr [rsp + 0x30]
+18041b430 add rsp, 0x70
+18041b434 pop rbx
+18041b435 ret 
+
+GetDamage RVA=4354b0
+1804354b0 push rbx
+1804354b2 sub rsp, 0x40
+1804354b6 movaps xmmword ptr [rsp + 0x20], xmm7
+1804354bb mov rbx, rcx
+1804354be test rcx, rcx
+1804354c1 je 0x18043554c
+1804354c7 cmp byte ptr [rip + 0x2d3d2b2], 0
+1804354ce jne 0x1804354e3
+1804354d0 lea rcx, [rip + 0x2b56091] ; float=-2.054372549057007
+1804354d7 call 0x1802696c0
+1804354dc mov byte ptr [rip + 0x2d3d29d], 1
+1804354e3 mov rcx, qword ptr [rbx + 0x28]
+1804354e7 test rcx, rcx
+1804354ea je 0x18043554c
+1804354ec mov r8, qword ptr [rip + 0x2b56075] ; float=-2.054372549057007
+1804354f3 mov edx, 0xc
+1804354f8 call 0x180dd2840
+1804354fd movaps xmm7, xmm0
+180435500 mov rax, qword ptr [rbx + 0x18]
+180435504 test rax, rax
+180435507 je 0x18043554c
+180435509 cmp dword ptr [rax + 0x50], 7
+18043550d movaps xmmword ptr [rsp + 0x30], xmm6
+180435512 jne 0x180435529
+180435514 xor edx, edx
+180435516 mov ecx, 3
+18043551b call 0x18042b6a0
+180435520 movaps xmm6, xmm0
+180435523 addss xmm6, xmm7
+180435527 jmp 0x18043552c
+180435529 movaps xmm6, xmm7
+18043552c xor edx, edx
+18043552e mov ecx, 0xc
+180435533 call 0x18042b6a0
+180435538 movaps xmm7, xmmword ptr [rsp + 0x20]
+18043553d mulss xmm0, xmm6
+180435541 movaps xmm6, xmmword ptr [rsp + 0x30]
+180435546 add rsp, 0x40
+18043554a pop rbx
+18043554b ret 
+
+GetDamage RVA=435560
+180435560 sub rsp, 0x38
+180435564 movaps xmmword ptr [rsp + 0x20], xmm6
+180435569 xor edx, edx
+18043556b mov ecx, 0xc
+180435570 movaps xmm6, xmm0
+180435573 call 0x18042b6a0
+180435578 mulss xmm0, xmm6
+18043557c movaps xmm6, xmmword ptr [rsp + 0x20]
+180435581 add rsp, 0x38
+180435585 ret 
+
+GetCritDamageMultiplier RVA=4349d0
+1804349d0 push rbx
+1804349d2 sub rsp, 0x30
+1804349d6 mov rbx, rcx
+1804349d9 xor edx, edx
+1804349db test rcx, rcx
+1804349de mov ecx, 0x13
+1804349e3 je 0x180434a3a
+1804349e5 movaps xmmword ptr [rsp + 0x20], xmm6
+1804349ea call 0x18042b6a0
+1804349ef cmp byte ptr [rip + 0x2d3dd8a], 0
+1804349f6 movaps xmm6, xmm0
+1804349f9 jne 0x180434a0e
+1804349fb lea rcx, [rip + 0x2b56b66] ; float=-2.054372549057007
+180434a02 call 0x1802696c0
+180434a07 mov byte ptr [rip + 0x2d3dd72], 1
+180434a0e mov rcx, qword ptr [rbx + 0x28]
+180434a12 test rcx, rcx
+180434a15 je 0x180434a44
+180434a17 mov r8, qword ptr [rip + 0x2b56b4a] ; float=-2.054372549057007
+180434a1e mov edx, 0x13
+180434a23 call 0x180dd2840
+180434a28 addss xmm6, xmm0
+180434a2c movaps xmm0, xmm6
+180434a2f movaps xmm6, xmmword ptr [rsp + 0x20]
+180434a34 add rsp, 0x30
+180434a38 pop rbx
+180434a39 ret 
+
+GetModificationTotal RVA=44d610
+18044d610 lea r8d, [rdx + 1]
+18044d614 xorps xmm1, xmm1
+18044d617 cmp r8d, 1
+18044d61b jle 0x18044d685
+18044d61d movss xmm2, dword ptr [rcx + 0x18]
+18044d622 lea eax, [r8 - 1]
+18044d626 mov edx, 1
+18044d62b cmp eax, 8
+18044d62e jl 0x18044d676
+18044d630 lea eax, [r8 - 7]
+18044d634 nop dword ptr [rax]
+18044d638 nop dword ptr [rax + rax]
+18044d640 movaps xmm0, xmm2
+18044d643 add edx, 8
+18044d646 addss xmm0, xmm1
+18044d64a movaps xmm1, xmm0
+18044d64d addss xmm1, xmm2
+18044d651 addss xmm1, xmm2
+18044d655 addss xmm1, xmm2
+18044d659 addss xmm1, xmm2
+18044d65d addss xmm1, xmm2
+18044d661 addss xmm1, xmm2
+18044d665 addss xmm1, xmm2
+18044d669 cmp edx, eax
+18044d66b jl 0x18044d640
+18044d66d cmp edx, r8d
+18044d670 jl 0x18044d676
+18044d672 movaps xmm0, xmm1
+18044d675 ret 
+
+GetDamage RVA=43a2d0
+18043a2d0 sub rsp, 0x28
+18043a2d4 cmp byte ptr [rip + 0x2d38569], 0
+18043a2db jne 0x18043a2f0
+18043a2dd lea rcx, [rip + 0x2b27e14] ; float=1.0906033872039285e-19
+18043a2e4 call 0x1802696c0
+18043a2e9 mov byte ptr [rip + 0x2d38554], 1
+18043a2f0 mov rax, qword ptr [rip + 0x2b27e01] ; float=1.0906033872039285e-19
+18043a2f7 cmp dword ptr [rax + 0xe4], 0
+18043a2fe jne 0x18043a30f
+18043a300 mov rcx, rax
+18043a303 call 0x1802699a0
+18043a308 mov rax, qword ptr [rip + 0x2b27de9] ; float=1.0906033872039285e-19
+18043a30f mov rax, qword ptr [rax + 0xb8]
+18043a316 mov rcx, qword ptr [rax + 8]
+18043a31a test rcx, rcx
+18043a31d je 0x18043a334
+18043a31f movss xmm0, dword ptr [rcx + 0x12c]
+18043a327 mulss xmm0, dword ptr [rip + 0x21f4955] ; float=1.5
+18043a32f add rsp, 0x28
+18043a333 ret 
+
+GetDamage RVA=4559b0
+1804559b0 sub rsp, 0x28
+1804559b4 cmp byte ptr [rip + 0x2d1cedb], 0
+1804559bb jne 0x1804559d0
+1804559bd lea rcx, [rip + 0x2b0c734] ; float=1.0906033872039285e-19
+1804559c4 call 0x1802696c0
+1804559c9 mov byte ptr [rip + 0x2d1cec6], 1
+1804559d0 mov rax, qword ptr [rip + 0x2b0c721] ; float=1.0906033872039285e-19
+1804559d7 cmp dword ptr [rax + 0xe4], 0
+1804559de jne 0x1804559ef
+1804559e0 mov rcx, rax
+1804559e3 call 0x1802699a0
+1804559e8 mov rax, qword ptr [rip + 0x2b0c709] ; float=1.0906033872039285e-19
+1804559ef mov rax, qword ptr [rax + 0xb8]
+1804559f6 mov rcx, qword ptr [rax + 8]
+1804559fa test rcx, rcx
+1804559fd je 0x180455a14
+1804559ff movss xmm0, dword ptr [rcx + 0x12c]
+180455a07 mulss xmm0, dword ptr [rip + 0x21d9259] ; float=0.800000011920929
+180455a0f add rsp, 0x28
+180455a13 ret 
+
+GetDamage RVA=456550
+180456550 sub rsp, 0x28
+180456554 cmp byte ptr [rip + 0x2d1c341], 0
+18045655b jne 0x180456570
+18045655d lea rcx, [rip + 0x2b0bb94] ; float=1.0906033872039285e-19
+180456564 call 0x1802696c0
+180456569 mov byte ptr [rip + 0x2d1c32c], 1
+180456570 mov rax, qword ptr [rip + 0x2b0bb81] ; float=1.0906033872039285e-19
+180456577 cmp dword ptr [rax + 0xe4], 0
+18045657e jne 0x18045658f
+180456580 mov rcx, rax
+180456583 call 0x1802699a0
+180456588 mov rax, qword ptr [rip + 0x2b0bb69] ; float=1.0906033872039285e-19
+18045658f mov rax, qword ptr [rax + 0xb8]
+180456596 mov rcx, qword ptr [rax + 8]
+18045659a test rcx, rcx
+18045659d je 0x1804565b8
+18045659f movss xmm0, dword ptr [rcx + 0x12c]
+1804565a7 addss xmm0, xmm0
+1804565ab addss xmm0, dword ptr [rip + 0x21d8705] ; float=8.0
+1804565b3 add rsp, 0x28
+1804565b7 ret 
+
+GetDamage RVA=457bd0
+180457bd0 sub rsp, 0x28
+180457bd4 cmp byte ptr [rip + 0x2d1acd6], 0
+180457bdb jne 0x180457bf0
+180457bdd lea rcx, [rip + 0x2b0a514] ; float=1.0906033872039285e-19
+180457be4 call 0x1802696c0
+180457be9 mov byte ptr [rip + 0x2d1acc1], 1
+180457bf0 mov rax, qword ptr [rip + 0x2b0a501] ; float=1.0906033872039285e-19
+180457bf7 cmp dword ptr [rax + 0xe4], 0
+180457bfe jne 0x180457c0f
+180457c00 mov rcx, rax
+180457c03 call 0x1802699a0
+180457c08 mov rax, qword ptr [rip + 0x2b0a4e9] ; float=1.0906033872039285e-19
+180457c0f mov rax, qword ptr [rax + 0xb8]
+180457c16 mov rcx, qword ptr [rax + 8]
+180457c1a test rcx, rcx
+180457c1d je 0x180457c30
+180457c1f movss xmm0, dword ptr [rcx + 0x12c]
+180457c27 addss xmm0, xmm0
+180457c2b add rsp, 0x28
+180457c2f ret 
+
+GetDamage RVA=4584a0
+1804584a0 push rbx
+1804584a2 sub rsp, 0x30
+1804584a6 cmp byte ptr [rip + 0x2d1a40d], 0
+1804584ad mov rbx, rcx
+1804584b0 movaps xmmword ptr [rsp + 0x20], xmm6
+1804584b5 jne 0x1804584ca
+1804584b7 lea rcx, [rip + 0x2b09c3a] ; float=1.0906033872039285e-19
+1804584be call 0x1802696c0
+1804584c3 mov byte ptr [rip + 0x2d1a3f0], 1
+1804584ca mov rax, qword ptr [rip + 0x2b09c27] ; float=1.0906033872039285e-19
+1804584d1 movss xmm6, dword ptr [rbx + 0x38]
+1804584d6 mov ebx, dword ptr [rbx + 0x18]
+1804584d9 cmp dword ptr [rax + 0xe4], 0
+1804584e0 jne 0x1804584f1
+1804584e2 mov rcx, rax
+1804584e5 call 0x1802699a0
+1804584ea mov rax, qword ptr [rip + 0x2b09c07] ; float=1.0906033872039285e-19
+1804584f1 mov rax, qword ptr [rax + 0xb8]
+1804584f8 mov rcx, qword ptr [rax + 8]
+1804584fc test rcx, rcx
+1804584ff je 0x18045851f
+180458501 movd xmm0, ebx
+180458505 cvtdq2ps xmm0, xmm0
+180458508 mulss xmm0, xmm6
+18045850c movaps xmm6, xmmword ptr [rsp + 0x20]
+180458511 mulss xmm0, dword ptr [rcx + 0x12c]
+180458519 add rsp, 0x30
+18045851d pop rbx
+18045851e ret 
+
+GetDamage RVA=458dd0
+180458dd0 push rbx
+180458dd2 sub rsp, 0x30
+180458dd6 cmp byte ptr [rip + 0x2d19ae3], 0
+180458ddd mov rbx, rcx
+180458de0 movaps xmmword ptr [rsp + 0x20], xmm6
+180458de5 jne 0x180458dfa
+180458de7 lea rcx, [rip + 0x2b0930a] ; float=1.0906033872039285e-19
+180458dee call 0x1802696c0
+180458df3 mov byte ptr [rip + 0x2d19ac6], 1
+180458dfa mov rax, qword ptr [rip + 0x2b092f7] ; float=1.0906033872039285e-19
+180458e01 movss xmm6, dword ptr [rbx + 0x40]
+180458e06 mov ebx, dword ptr [rbx + 0x18]
+180458e09 cmp dword ptr [rax + 0xe4], 0
+180458e10 jne 0x180458e21
+180458e12 mov rcx, rax
+180458e15 call 0x1802699a0
+180458e1a mov rax, qword ptr [rip + 0x2b092d7] ; float=1.0906033872039285e-19
+180458e21 mov rax, qword ptr [rax + 0xb8]
+180458e28 mov rcx, qword ptr [rax + 8]
+180458e2c test rcx, rcx
+180458e2f je 0x180458e4f
+180458e31 movd xmm0, ebx
+180458e35 cvtdq2ps xmm0, xmm0
+180458e38 mulss xmm0, xmm6
+180458e3c movaps xmm6, xmmword ptr [rsp + 0x20]
+180458e41 mulss xmm0, dword ptr [rcx + 0x12c]
+180458e49 add rsp, 0x30
+180458e4d pop rbx
+180458e4e ret 
+
+GetDamage RVA=459820
+180459820 push rbx
+180459822 sub rsp, 0x30
+180459826 cmp byte ptr [rip + 0x2d19098], 0
+18045982d mov rbx, rcx
+180459830 movaps xmmword ptr [rsp + 0x20], xmm6
+180459835 jne 0x18045984a
+180459837 lea rcx, [rip + 0x2b088ba] ; float=1.0906033872039285e-19
+18045983e call 0x1802696c0
+180459843 mov byte ptr [rip + 0x2d1907b], 1
+18045984a mov rax, qword ptr [rip + 0x2b088a7] ; float=1.0906033872039285e-19
+180459851 movss xmm6, dword ptr [rbx + 0x38]
+180459856 mov ebx, dword ptr [rbx + 0x18]
+180459859 cmp dword ptr [rax + 0xe4], 0
+180459860 jne 0x180459871
+180459862 mov rcx, rax
+180459865 call 0x1802699a0
+18045986a mov rax, qword ptr [rip + 0x2b08887] ; float=1.0906033872039285e-19
+180459871 mov rax, qword ptr [rax + 0xb8]
+180459878 mov rcx, qword ptr [rax + 8]
+18045987c test rcx, rcx
+18045987f je 0x18045989f
+180459881 movd xmm0, ebx
+180459885 cvtdq2ps xmm0, xmm0
+180459888 mulss xmm0, xmm6
+18045988c movaps xmm6, xmmword ptr [rsp + 0x20]
+180459891 mulss xmm0, dword ptr [rcx + 0x12c]
+180459899 add rsp, 0x30
+18045989d pop rbx
+18045989e ret 
+
+GetDamage RVA=45a050
+18045a050 push rbx
+18045a052 sub rsp, 0x30
+18045a056 cmp byte ptr [rip + 0x2d1886d], 0
+18045a05d mov rbx, rcx
+18045a060 movaps xmmword ptr [rsp + 0x20], xmm6
+18045a065 jne 0x18045a07a
+18045a067 lea rcx, [rip + 0x2b0808a] ; float=1.0906033872039285e-19
+18045a06e call 0x1802696c0
+18045a073 mov byte ptr [rip + 0x2d18850], 1
+18045a07a mov rax, qword ptr [rip + 0x2b08077] ; float=1.0906033872039285e-19
+18045a081 movss xmm6, dword ptr [rbx + 0x38]
+18045a086 mov ebx, dword ptr [rbx + 0x18]
+18045a089 cmp dword ptr [rax + 0xe4], 0
+18045a090 jne 0x18045a0a1
+18045a092 mov rcx, rax
+18045a095 call 0x1802699a0
+18045a09a mov rax, qword ptr [rip + 0x2b08057] ; float=1.0906033872039285e-19
+18045a0a1 mov rax, qword ptr [rax + 0xb8]
+18045a0a8 mov rcx, qword ptr [rax + 8]
+18045a0ac test rcx, rcx
+18045a0af je 0x18045a0cf
+18045a0b1 movd xmm0, ebx
+18045a0b5 cvtdq2ps xmm0, xmm0
+18045a0b8 mulss xmm0, xmm6
+18045a0bc movaps xmm6, xmmword ptr [rsp + 0x20]
+18045a0c1 mulss xmm0, dword ptr [rcx + 0x12c]
+18045a0c9 add rsp, 0x30
+18045a0cd pop rbx
+18045a0ce ret 
+
+GetDamage RVA=45a780
+18045a780 push rbx
+18045a782 sub rsp, 0x30
+18045a786 cmp byte ptr [rip + 0x2d18141], 0
+18045a78d mov rbx, rcx
+18045a790 movaps xmmword ptr [rsp + 0x20], xmm6
+18045a795 jne 0x18045a7aa
+18045a797 lea rcx, [rip + 0x2b0795a] ; float=1.0906033872039285e-19
+18045a79e call 0x1802696c0
+18045a7a3 mov byte ptr [rip + 0x2d18124], 1
+18045a7aa mov rax, qword ptr [rip + 0x2b07947] ; float=1.0906033872039285e-19
+18045a7b1 movss xmm6, dword ptr [rbx + 0x3c]
+18045a7b6 mov ebx, dword ptr [rbx + 0x18]
+18045a7b9 cmp dword ptr [rax + 0xe4], 0
+18045a7c0 jne 0x18045a7d1
+18045a7c2 mov rcx, rax
+18045a7c5 call 0x1802699a0
+18045a7ca mov rax, qword ptr [rip + 0x2b07927] ; float=1.0906033872039285e-19
+18045a7d1 mov rax, qword ptr [rax + 0xb8]
+18045a7d8 mov rcx, qword ptr [rax + 8]
+18045a7dc test rcx, rcx
+18045a7df je 0x18045a7ff
+18045a7e1 movd xmm0, ebx
+18045a7e5 cvtdq2ps xmm0, xmm0
+18045a7e8 mulss xmm0, xmm6
+18045a7ec movaps xmm6, xmmword ptr [rsp + 0x20]
+18045a7f1 mulss xmm0, dword ptr [rcx + 0x12c]
+18045a7f9 add rsp, 0x30
+18045a7fd pop rbx
+18045a7fe ret 
+
+GetDamage RVA=463fc0
+180463fc0 sub rsp, 0x28
+180463fc4 cmp byte ptr [rip + 0x2d0e95d], 0
+180463fcb jne 0x180463fe0
+180463fcd lea rcx, [rip + 0x2b56c74] ; float=1.0901603285883298e-19
+180463fd4 call 0x1802696c0
+180463fd9 mov byte ptr [rip + 0x2d0e948], 1
+180463fe0 mov rax, qword ptr [rip + 0x2b56c61] ; float=1.0901603285883298e-19
+180463fe7 cmp dword ptr [rax + 0xe4], 0
+180463fee jne 0x180463fff
+180463ff0 mov rcx, rax
+180463ff3 call 0x1802699a0
+180463ff8 mov rax, qword ptr [rip + 0x2b56c49] ; float=1.0901603285883298e-19
+180463fff mov rcx, qword ptr [rax + 0xb8]
+180464006 movss xmm0, dword ptr [rcx]
+18046400a add rsp, 0x28
+18046400e ret 
+
+GetDamage RVA=4658c0
+1804658c0 push rbx
+1804658c2 sub rsp, 0x20
+1804658c6 cmp byte ptr [rip + 0x2d0d06a], 0
+1804658cd mov rbx, rcx
+1804658d0 jne 0x1804658e5
+1804658d2 lea rcx, [rip + 0x2afc81f] ; float=1.0906033872039285e-19
+1804658d9 call 0x1802696c0
+1804658de mov byte ptr [rip + 0x2d0d052], 1
+1804658e5 mov rax, qword ptr [rip + 0x2afc80c] ; float=1.0906033872039285e-19
+1804658ec cmp dword ptr [rax + 0xe4], 0
+1804658f3 jne 0x180465904
+1804658f5 mov rcx, rax
+1804658f8 call 0x1802699a0
+1804658fd mov rax, qword ptr [rip + 0x2afc7f4] ; float=1.0906033872039285e-19
+180465904 mov rax, qword ptr [rax + 0xb8]
+18046590b mov rcx, qword ptr [rax + 8]
+18046590f test rcx, rcx
+180465912 je 0x180465937
+180465914 movss xmm0, dword ptr [rcx + 0x12c]
+18046591c mulss xmm0, dword ptr [rbx + 0x3c]
+180465921 mulss xmm0, dword ptr [rip + 0x21c935f] ; float=1.75
+180465929 subss xmm0, dword ptr [rip + 0x21c9653] ; float=9.0
+180465931 add rsp, 0x20
+180465935 pop rbx
+180465936 ret 
+
+GetDamage RVA=477940
+180477940 sub rsp, 0x28
+180477944 cmp byte ptr [rip + 0x2cfb063], 0
+18047794b jne 0x180477960
+18047794d lea rcx, [rip + 0x2aea7a4] ; float=1.0906033872039285e-19
+180477954 call 0x1802696c0
+180477959 mov byte ptr [rip + 0x2cfb04e], 1
+180477960 mov rax, qword ptr [rip + 0x2aea791] ; float=1.0906033872039285e-19
+180477967 cmp dword ptr [rax + 0xe4], 0
+18047796e jne 0x18047797f
+180477970 mov rcx, rax
+180477973 call 0x1802699a0
+180477978 mov rax, qword ptr [rip + 0x2aea779] ; float=1.0906033872039285e-19
+18047797f mov rax, qword ptr [rax + 0xb8]
+180477986 mov rcx, qword ptr [rax + 8]
+18047798a test rcx, rcx
+18047798d je 0x18047799c
+18047798f movss xmm0, dword ptr [rcx + 0x12c]
+180477997 add rsp, 0x28
+18047799b ret 
+
+GetDamage RVA=47e3a0
+18047e3a0 push rbx
+18047e3a2 sub rsp, 0x20
+18047e3a6 cmp byte ptr [rip + 0x2cf4638], 0
+18047e3ad mov rbx, rcx
+18047e3b0 jne 0x18047e3c5
+18047e3b2 lea rcx, [rip + 0x2ae3d3f] ; float=1.0906033872039285e-19
+18047e3b9 call 0x1802696c0
+18047e3be mov byte ptr [rip + 0x2cf4620], 1
+18047e3c5 mov rax, qword ptr [rip + 0x2ae3d2c] ; float=1.0906033872039285e-19
+18047e3cc cmp dword ptr [rax + 0xe4], 0
+18047e3d3 jne 0x18047e3e4
+18047e3d5 mov rcx, rax
+18047e3d8 call 0x1802699a0
+18047e3dd mov rax, qword ptr [rip + 0x2ae3d14] ; float=1.0906033872039285e-19
+18047e3e4 mov rax, qword ptr [rax + 0xb8]
+18047e3eb mov rcx, qword ptr [rax + 8]
+18047e3ef test rcx, rcx
+18047e3f2 je 0x18047e4a0
+18047e3f8 mov rax, qword ptr [rcx + 0x90]
+18047e3ff test rax, rax
+18047e402 je 0x18047e4a0
+18047e408 movss xmm2, dword ptr [rax + 0x68]
+18047e40d movss xmm1, dword ptr [rip + 0x21b0b9f] ; float=1000000.0
+18047e415 comiss xmm2, xmm1
+18047e418 movss xmm4, dword ptr [rip + 0x21b08d0] ; float=1000.0
+18047e420 movss xmm5, dword ptr [rip + 0x21b0a18] ; float=10000.0
+18047e428 jbe 0x18047e443
+18047e42a subss xmm2, xmm1
+18047e42e xorps xmm0, xmm0
+18047e431 divss xmm2, xmm4
+18047e435 mulss xmm2, dword ptr [rbx + 0x2c]
+18047e43a addss xmm2, xmm0
+18047e43e movaps xmm3, xmm2
+18047e441 jmp 0x18047e452
+18047e443 movaps xmm1, xmm2
+18047e446 xorps xmm3, xmm3
+18047e449 comiss xmm2, dword ptr [rip + 0x21b0b60] ; float=200000.0
+18047e450 jbe 0x18047e471
+18047e452 subss xmm1, dword ptr [rip + 0x21b0b56] ; float=200000.0
+18047e45a divss xmm1, xmm4
+18047e45e mulss xmm1, dword ptr [rbx + 0x28]
+18047e463 addss xmm3, xmm1
+18047e467 movss xmm1, dword ptr [rip + 0x21b0b41] ; float=200000.0
+18047e46f jmp 0x18047e476
+18047e471 comiss xmm2, xmm5
+18047e474 jbe 0x18047e48a
+18047e476 subss xmm1, xmm5
+18047e47a divss xmm1, xmm4
+18047e47e mulss xmm1, dword ptr [rbx + 0x24]
+18047e483 addss xmm3, xmm1
+18047e487 movaps xmm1, xmm5
+18047e48a divss xmm1, xmm4
+18047e48e mulss xmm1, dword ptr [rbx + 0x20]
+18047e493 addss xmm1, xmm3
+18047e497 movaps xmm0, xmm1
+18047e49a add rsp, 0x20
+18047e49e pop rbx
+18047e49f ret 
+
+GetDamage RVA=47fc70
+18047fc70 sub rsp, 0x28
+18047fc74 cmp byte ptr [rip + 0x2cf2d7f], 0
+18047fc7b jne 0x18047fc90
+18047fc7d lea rcx, [rip + 0x2ae2474] ; float=1.0906033872039285e-19
+18047fc84 call 0x1802696c0
+18047fc89 mov byte ptr [rip + 0x2cf2d6a], 1
+18047fc90 mov rax, qword ptr [rip + 0x2ae2461] ; float=1.0906033872039285e-19
+18047fc97 cmp dword ptr [rax + 0xe4], 0
+18047fc9e jne 0x18047fcaf
+18047fca0 mov rcx, rax
+18047fca3 call 0x1802699a0
+18047fca8 mov rax, qword ptr [rip + 0x2ae2449] ; float=1.0906033872039285e-19
+18047fcaf mov rax, qword ptr [rax + 0xb8]
+18047fcb6 mov rcx, qword ptr [rax + 8]
+18047fcba test rcx, rcx
+18047fcbd je 0x18047fcd4
+18047fcbf movss xmm0, dword ptr [rcx + 0x12c]
+18047fcc7 mulss xmm0, dword ptr [rip + 0x21aefd9] ; float=3.0
+18047fccf add rsp, 0x28
+18047fcd3 ret 
+
+GetCritDamageMultiplier RVA=4702d0
+1804702d0 mov qword ptr [rsp + 0x10], rsi
+1804702d5 push rdi
+1804702d6 sub rsp, 0x40
+1804702da cmp byte ptr [rip + 0x2d0278d], 0
+1804702e1 mov rdi, rdx
+1804702e4 movaps xmmword ptr [rsp + 0x30], xmm6
+1804702e9 movaps xmm6, xmm0
+1804702ec movaps xmmword ptr [rsp + 0x20], xmm7
+1804702f1 jne 0x180470306
+1804702f3 lea rcx, [rip + 0x2af1ea6] ; float=1.0906044211796942e-19
+1804702fa call 0x1802696c0
+1804702ff mov byte ptr [rip + 0x2d02768], 1
+180470306 mov dword ptr [rdi], 0x3f800000
+18047030c cmp byte ptr [rip + 0x2d01c7e], 0 ; float=0.0
+180470313 jne 0x180470328
+180470315 lea rcx, [rip + 0x2ae9ca4] ; float=1.0904469983693677e-19
+18047031c call 0x1802696c0
+180470321 mov byte ptr [rip + 0x2d01c69], 1 ; float=0.0
+180470328 mov rcx, qword ptr [rip + 0x2ae9c91] ; float=1.0904469983693677e-19
+18047032f cmp dword ptr [rcx + 0xe4], 0
+180470336 jne 0x18047033d
+180470338 call 0x1802699a0
+18047033d xorps xmm0, xmm0
+180470340 cvtss2sd xmm0, xmm6
+180470344 call 0x1802fe2b0
+180470349 mov rax, qword ptr [rip + 0x2af1e50] ; float=1.0906044211796942e-19
+180470350 cvttsd2si esi, xmm0
+180470354 cmp dword ptr [rax + 0xe4], 0
+18047035b movd xmm7, esi
+18047035f cvtdq2ps xmm7, xmm7
+180470362 jne 0x180470373
+180470364 mov rcx, rax
+180470367 call 0x1802699a0
+18047036c mov rax, qword ptr [rip + 0x2af1e2d] ; float=1.0906044211796942e-19
+180470373 mov rax, qword ptr [rax + 0xb8]
+18047037a mov rcx, qword ptr [rax]
+18047037d test rcx, rcx
+180470380 je 0x180470416
+180470386 mov rax, qword ptr [rcx]
+180470389 mov qword ptr [rsp + 0x50], rbx
+18047038e mov rdx, qword ptr [rax + 0x1c0]
+180470395 call qword ptr [rax + 0x1b8]
+18047039b subss xmm6, xmm7
+18047039f xorps xmm1, xmm1
+1804703a2 lea ebx, [rsi + 1]
+1804703a5 cvtss2sd xmm1, xmm6
+1804703a9 comisd xmm1, xmm0
+1804703ad cmovbe ebx, esi
+1804703b0 test ebx, ebx
+1804703b2 je 0x180470412
+1804703b4 cmp ebx, 1
+1804703b7 je 0x1804703ea
+1804703b9 movss xmm1, dword ptr [rip + 0x21be8e3] ; float=2.0
+1804703c1 movd xmm0, ebx
+1804703c5 cvtdq2ps xmm0, xmm0
+1804703c8 mulss xmm0, dword ptr [rip + 0x21be884] ; float=0.5
+1804703d0 call 0x1802ff020
+1804703d5 movd xmm1, ebx
+1804703d9 cvtdq2ps xmm1, xmm1
+1804703dc addss xmm1, dword ptr [rip + 0x21be898] ; float=1.0
+1804703e4 addss xmm0, xmm1
+1804703e8 jmp 0x1804703f2
+1804703ea movss xmm0, dword ptr [rip + 0x21be8b2] ; float=2.0
+1804703f2 movss dword ptr [rdi], xmm0
+1804703f6 mov al, 1
+1804703f8 mov rbx, qword ptr [rsp + 0x50]
+1804703fd mov rsi, qword ptr [rsp + 0x58]
+180470402 movaps xmm6, xmmword ptr [rsp + 0x30]
+180470407 movaps xmm7, xmmword ptr [rsp + 0x20]
+18047040c add rsp, 0x40
+180470410 pop rdi
+180470411 ret 
+
+GetDamage RVA=471c40
+180471c40 mov qword ptr [rsp + 8], rbx
+180471c45 push rdi
+180471c46 sub rsp, 0x20
+180471c4a cmp byte ptr [rip + 0x2d00e25], 0
+180471c51 mov rbx, rdx
+180471c54 mov rdi, rcx
+180471c57 jne 0x180471c6c
+180471c59 lea rcx, [rip + 0x2b212c0] ; float=1.0894187094703877e-19
+180471c60 call 0x1802696c0
+180471c65 mov byte ptr [rip + 0x2d00e0a], 1
+180471c6c mov rcx, qword ptr [rip + 0x2b212ad] ; float=1.0894187094703877e-19
+180471c73 cmp dword ptr [rcx + 0xe4], 0
+180471c7a jne 0x180471c81
+180471c7c call 0x1802699a0
+180471c81 xor edx, edx
+180471c83 mov rcx, rbx
+180471c86 call 0x18041b290
+180471c8b mulss xmm0, dword ptr [rdi + 0x4c]
+180471c90 mov rbx, qword ptr [rsp + 0x30]
+180471c95 add rsp, 0x20
+180471c99 pop rdi
+180471c9a ret 
+
+GetDamage RVA=38cff0
+18038cff0 movss xmm0, dword ptr [rcx + 0x34]
+18038cff5 ret 
+
+GetDamage RVA=4a7df0
+1804a7df0 sub rsp, 0x38
+1804a7df4 cmp byte ptr [rip + 0x2ccad30], 0
+1804a7dfb jne 0x1804a7e10
+1804a7dfd lea rcx, [rip + 0x2aba2f4] ; float=1.0906033872039285e-19
+1804a7e04 call 0x1802696c0
+1804a7e09 mov byte ptr [rip + 0x2ccad1b], 1
+1804a7e10 mov rax, qword ptr [rip + 0x2aba2e1] ; float=1.0906033872039285e-19
+1804a7e17 cmp dword ptr [rax + 0xe4], 0
+1804a7e1e jne 0x1804a7e2f
+1804a7e20 mov rcx, rax
+1804a7e23 call 0x1802699a0
+1804a7e28 mov rax, qword ptr [rip + 0x2aba2c9] ; float=1.0906033872039285e-19
+1804a7e2f mov rax, qword ptr [rax + 0xb8]
+1804a7e36 mov rcx, qword ptr [rax + 8]
+1804a7e3a test rcx, rcx
+1804a7e3d je 0x1804a7e6e
+1804a7e3f movaps xmmword ptr [rsp + 0x20], xmm6
+1804a7e44 xor edx, edx
+1804a7e46 movss xmm6, dword ptr [rcx + 0x12c]
+1804a7e4e mov ecx, 0xc
+1804a7e53 call 0x18042b6a0
+1804a7e58 mulss xmm6, dword ptr [rip + 0x2186e0c] ; float=0.8500000238418579
+1804a7e60 mulss xmm0, xmm6
+1804a7e64 movaps xmm6, xmmword ptr [rsp + 0x20]
+1804a7e69 add rsp, 0x38
+1804a7e6d ret 
+
+CalculateBaseDamage RVA=4b4dd0
+1804b4dd0 push rbx
+1804b4dd2 sub rsp, 0x30
+1804b4dd6 cmp byte ptr [rip + 0x2cbdd95], 0
+1804b4ddd mov rbx, rcx
+1804b4de0 jne 0x1804b4df5
+1804b4de2 lea rcx, [rip + 0x2aad30f] ; float=1.0906033872039285e-19
+1804b4de9 call 0x1802696c0
+1804b4dee mov byte ptr [rip + 0x2cbdd7d], 1
+1804b4df5 mov rax, qword ptr [rip + 0x2aad2fc] ; float=1.0906033872039285e-19
+1804b4dfc cmp dword ptr [rax + 0xe4], 0
+1804b4e03 jne 0x1804b4e14
+1804b4e05 mov rcx, rax
+1804b4e08 call 0x1802699a0
+1804b4e0d mov rax, qword ptr [rip + 0x2aad2e4] ; float=1.0906033872039285e-19
+1804b4e14 mov rcx, qword ptr [rbx + 0x90]
+1804b4e1b test rcx, rcx
+1804b4e1e je 0x1804b4e56
+1804b4e20 mov rax, qword ptr [rax + 0xb8]
+1804b4e27 xor edx, edx
+1804b4e29 movaps xmmword ptr [rsp + 0x20], xmm6
+1804b4e2e movss xmm6, dword ptr [rax + 0x28]
+1804b4e33 call 0x1804e0320
+1804b4e38 movd xmm0, eax
+1804b4e3c cvtdq2ps xmm0, xmm0
+1804b4e3f addss xmm0, xmm6
+1804b4e43 movaps xmm6, xmmword ptr [rsp + 0x20]
+1804b4e48 movss dword ptr [rbx + 0x12c], xmm0
+1804b4e50 add rsp, 0x30
+1804b4e54 pop rbx
+1804b4e55 ret 

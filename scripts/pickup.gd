@@ -1,6 +1,7 @@
 extends Node3D
 
 var bonus: bool = false
+var large_xp: bool = false
 var magnetized: bool = false
 var target: CharacterBody3D
 var phase: float = 0.0
@@ -10,8 +11,8 @@ func _ready() -> void:
 	add_to_group("pickups")
 	visual = MeshInstance3D.new()
 	var mesh := SphereMesh.new()
-	mesh.radius = 0.18
-	mesh.height = 0.36
+	mesh.radius = 0.28 if large_xp and not bonus else 0.18
+	mesh.height = mesh.radius * 2.0
 	mesh.radial_segments = 12
 	mesh.rings = 6
 	visual.mesh = mesh
@@ -31,12 +32,12 @@ func _physics_process(delta: float) -> void:
 		return
 	var destination := target.global_position + Vector3.UP * 0.45
 	var distance := global_position.distance_to(destination)
-	if distance < 2.2 or magnetized:
-		global_position = global_position.move_toward(destination, (18.0 if magnetized else 7.0) * delta)
+	if distance < target.call("collection_radius") or magnetized:
+		global_position = destination
 	if global_position.distance_to(destination) < 0.65:
 		if bonus:
 			target.call("collect_bonus")
 		else:
-			target.call("collect_xp")
+			target.call("collect_xp", 20 if large_xp else 10)
 		set_physics_process(false)
 		queue_free()

@@ -19,7 +19,8 @@ func run() -> void:
 	enemy.set("target", player)
 	arena.add_child(enemy)
 	# Longas perseguicoes, incluindo trajeto passando pelas plataformas baixas.
-	var starts: Array[Vector3] = [Vector3(0, 0, 18), Vector3(18, 0, -18), Vector3(-20, 0, -20)]
+	# Evita iniciar dentro da nova rampa que ocupa x=10..21 em z=-18.
+	var starts: Array[Vector3] = [Vector3(0, 0, 18), Vector3(23, 0, -18), Vector3(-20, 0, -20)]
 	for start in starts:
 		player.global_position = Vector3(0, 0, 3)
 		player.velocity = Vector3.ZERO

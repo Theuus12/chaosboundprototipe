@@ -16,7 +16,7 @@ func run() -> void:
 	for i in range(3):
 		var roll: float = menu.get("rolls")[i]
 		var kind: int = menu.get("offered")[i]
-		if kind >= 10:
+		if preload("res://scripts/tomes.gd").is_weapon(kind):
 			assert(menu.get("weapon_rolls")[i].size() in [1, 2])
 			continue
 		assert(roll >= (0.3 if kind == 1 else 1.0) and roll <= (2.5 if kind == 1 else 13.0))

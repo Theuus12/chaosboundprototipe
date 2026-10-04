@@ -1,6 +1,8 @@
 extends Node3D
 ## Corte instantaneo: setor de 90 graus com alcance de 3 metros.
 var damage: int = 100
+var player: CharacterBody3D
+var lifetime: float = 0.22
 var reach: float = 3.0
 var half_angle: float = PI / 4.0
 var age: float = 0.0
@@ -46,11 +48,14 @@ func strike() -> void:
 		var query := PhysicsRayQueryParameters3D.create(global_position, target_point, 1)
 		if not get_world_3d().direct_space_state.intersect_ray(query).is_empty():
 			continue
-		enemy.call("take_damage", damage)
+		if is_instance_valid(player):
+			player.call("hit_enemy", enemy, damage)
+		else:
+			enemy.call("take_damage", damage)
 
 func _process(delta: float) -> void:
 	age += delta
 	var material := visual.material_override as StandardMaterial3D
-	material.albedo_color.a = maxf(0.0, 0.65 * (1.0 - age / 0.22))
-	if age >= 0.22:
+	material.albedo_color.a = maxf(0.0, 0.65 * (1.0 - age / lifetime))
+	if age >= lifetime:
 		queue_free()

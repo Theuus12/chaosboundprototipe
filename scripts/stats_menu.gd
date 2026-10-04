@@ -6,6 +6,8 @@ var text: Label
 var previous_mouse_mode: int
 var item_labels: Array[Label] = []
 var buff_labels: Array[Label] = []
+var crystal_slots: Array[VBoxContainer] = []
+var weapon_icons: Array[TextureRect] = []
 const Rarity = preload("res://scripts/buff_rarity.gd")
 
 func _ready() -> void:
@@ -45,10 +47,10 @@ func _ready() -> void:
 	inventory.add_theme_constant_override("separation", 16)
 	layout.add_child(inventory)
 	var hint := Label.new()
-	hint.text = "INVENTARIO\nCtrl + clique: melhorar arma ou buff"
+	hint.text = "INVENTARIO\nCtrl + clique: melhorar arma ou cristal"
 	hint.add_theme_font_size_override("font_size", 18)
 	inventory.add_child(hint)
-	for category in ["ITENS — 4 SLOTS", "BUFFS — 4 SLOTS"]:
+	for category in ["ITENS — 4 SLOTS", "CRISTAIS — 4 SLOTS"]:
 		var title := Label.new()
 		title.text = category
 		title.add_theme_font_size_override("font_size", 22)
@@ -68,10 +70,29 @@ func _ready() -> void:
 			style.content_margin_right = 10
 			panel.add_theme_stylebox_override("panel", style)
 			grid.add_child(panel)
+			if category.begins_with("CRISTAIS"):
+				var crystal := VBoxContainer.new()
+				crystal.set_script(preload("res://scripts/crystal_slot.gd"))
+				panel.add_child(crystal)
+				crystal_slots.append(crystal)
+				buff_labels.append(crystal.get("level_label"))
+				panel.gui_input.connect(buff_click.bind(i))
+				continue
 			var label := Label.new()
 			label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			label.add_theme_font_size_override("font_size", 15)
-			panel.add_child(label)
+			label.add_theme_color_override("font_color", Color.WHITE)
+			var content := VBoxContainer.new()
+			content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			panel.add_child(content)
+			var icon := TextureRect.new()
+			icon.custom_minimum_size = Vector2(40, 40)
+			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			content.add_child(icon)
+			weapon_icons.append(icon)
+			content.add_child(label)
 			if category.begins_with("ITENS"):
 				item_labels.append(label)
 				panel.gui_input.connect(item_click.bind(i))
@@ -103,8 +124,15 @@ func toggle() -> void:
 
 func refresh_stats() -> void:
 	var tenths: int = player.get("projectile_bonus_tenths")
-	text.text = "STATUS DO PERSONAGEM\n\nNivel: %d | XP: %d/100\nVida: %d/%d\nVelocidade de ataque: +%d%%\nIntervalo de disparo: %.2f s\nProjetil acumulado: +%.1f\nFlechas por disparo: %d (1 base + %d adicionais)\nFracao guardada: %.1f / 1.0\nChance de XP adicional: %d%%\nBonus amarelos: %d" % [player.get("level"), player.get("xp"), player.get("health"), player.get("max_health"), player.get("attack_speed_bonus"), player.call("effective_attack_interval"), tenths / 10.0, player.call("projectile_count"), int(tenths / 10.0), (tenths % 10) / 10.0, player.get("extra_xp_chance"), player.get("bonus_orbs")]
+	text.text = "STATUS DO PERSONAGEM\n\nNivel: %d | XP: %d/100\nVida: %d/%d\nVelocidade de ataque: +%d%%\nIntervalo de disparo: %.2f s\nProjetil acumulado: +%.1f\nFlechas por disparo: %d (1 base + %d adicionais)\nFracao guardada: %.1f / 1.0\nBônus nas chances de drop e orb maior: %d%%\nBonus amarelos: %d" % [player.get("level"), player.get("xp"), player.get("health"), player.get("max_health"), player.get("attack_speed_bonus"), player.call("effective_attack_interval"), tenths / 10.0, player.call("projectile_count"), int(tenths / 10.0), (tenths % 10) / 10.0, player.get("extra_xp_chance"), player.get("bonus_orbs")]
 	var difficulty: int = player.get("difficulty_bonus")
+	text.text += "\nEscudo: %.1f/%.1f | Moedas: %.1f" % [player.get("shield"), player.call("max_shield"), player.get("coins")]
+	for kind in preload("res://scripts/tomes.gd").catalog():
+		if kind < 6 or player.call("tome_bonus", kind) <= 0.0:
+			continue
+		text.text += "\n%s: %s" % [player.BUFF_NAMES[kind], player.call("buff_value", kind)]
+	for kind in player.get("chaos_results"):
+		text.text += "\n  Caos → %s: +%.0f%%" % [player.BUFF_NAMES[kind], player.get("chaos_results")[kind]]
 	text.text += "\nMovimento: +%d%% (%.1f m/s) | Kills: %d" % [player.get("movement_speed_bonus"), player.call("effective_move_speed"), player.get("kills")]
 	var chances := Rarity.probabilities(player.get("luck_bonus"))
 	text.text += "\nSorte: +%d%% | Dourado: %.1f%%" % [player.get("luck_bonus"), chances[4] * 100.0]
@@ -112,12 +140,14 @@ func refresh_stats() -> void:
 
 	text.text += "\nDano da arma: %d | Monstros por grupo: %d" % [player.get("weapon_damage"), get_tree().current_scene.call("effective_wave_size")]
 
-	for weapon in [10, 11, 12]:
+	for weapon in [10, 11, 12, 26]:
 		var data: Dictionary = player.get("weapons")[weapon]
 		var title: String = preload("res://scripts/weapon_upgrades.gd").NAMES[weapon]
 		if data.unlocked:
 			text.text += "\n%s Nv.%d | Dano %d" % [title, data.level, player.call("effective_weapon_damage", weapon)]
-			if weapon == 10:
+			if weapon == 26:
+				text.text += " | %d projéteis | %d alvos | Ricochete %d dano | %.2fs" % [player.call("dagger_count"), player.call("dagger_hits"), player.call("dagger_bounce_damage"), player.call("effective_dagger_interval")]
+			elif weapon == 10:
 				text.text += " | %d flechas | %.2fs" % [player.call("projectile_count"), player.call("effective_attack_interval")]
 			else:
 				text.text += " | Area +%.0f%%" % data.area
@@ -132,25 +162,26 @@ func refresh_inventory() -> void:
 	var items: Array = player.get("item_slots")
 	var buffs: Array = player.get("buff_slots")
 	for i in range(4):
+		weapon_icons[i].texture = null
 		item_labels[i].text = "Item %d\n%s" % [i + 1, "Vazio" if items[i].is_empty() else items[i]]
-		for weapon in [10, 11, 12]:
+		for weapon in [10, 11, 12, 26]:
 			if items[i] == preload("res://scripts/weapon_upgrades.gd").NAMES[weapon]:
+				weapon_icons[i].texture = load(preload("res://scripts/weapon_upgrades.gd").ICON_PATHS[weapon])
 				item_labels[i].text += "\nNivel %d | Dano %d" % [player.get("weapons")[weapon].level, player.call("effective_weapon_damage", weapon)]
+				if weapon == 26:
+					item_labels[i].text += "\n%d alvos | Ricochete %d dano" % [player.call("dagger_hits"), player.call("dagger_bounce_damage")]
 				var data: Dictionary = player.get("weapons")[weapon]
 				var details: PackedStringArray = []
 				for attribute in preload("res://scripts/weapon_upgrades.gd").ATTRIBUTES[weapon]:
 					var title: String = preload("res://scripts/weapon_upgrades.gd").LABELS[attribute]
 					var value := "+%.1f" % data[attribute] if attribute == "projectiles" else "+%.0f%%" % data[attribute]
+					if attribute == "bounces":
+						value = "+%d" % int(data[attribute])
 					details.append("%s: %s" % [title, value])
 				item_labels[i].text += "\n" + "\n".join(details)
 				item_labels[i].get_parent().tooltip_text = "\n".join(details) + "\nCtrl + clique: melhorar"
-		if i < buffs.size():
-			var kind: int = buffs[i]
-			var rarity: int = player.get("buff_rarities").get(kind, 0)
-			buff_labels[i].text = "x%d\n%s\n%s" % [player.get("buff_stacks").get(kind, 0), player.BUFF_NAMES[kind], player.call("buff_value", kind)]
-			buff_labels[i].add_theme_color_override("font_color", Color.WHITE)
-		else:
-			buff_labels[i].text = "Buff %d\nVazio" % (i + 1)
+		crystal_slots[i].call("update_buff", player, buffs[i] if i < buffs.size() else -1)
+		crystal_slots[i].get_parent().tooltip_text = crystal_slots[i].tooltip_text + "\nCtrl + clique: melhorar"
 
 func buff_click(event: InputEvent, slot: int) -> void:
 	if not overlay.visible or not event is InputEventMouseButton:
@@ -175,7 +206,7 @@ func item_click(event: InputEvent, slot: int) -> void:
 	if slot < 0 or slot >= items.size():
 		return
 	const Weapons = preload("res://scripts/weapon_upgrades.gd")
-	for weapon in [10, 11, 12]:
+	for weapon in [10, 11, 12, 26]:
 		if items[slot] != Weapons.NAMES[weapon]:
 			continue
 		var stats := {}

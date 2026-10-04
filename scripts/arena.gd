@@ -7,8 +7,52 @@ var elapsed_time: float = 0.0
 var overtime_stage: int = 0
 @export var spawn_interval: float = 1.8
 @export var max_enemies: int = 25
-@export var spawn_min_distance: float = 8.0
-@export var spawn_max_distance: float = 13.0
+@export var horde_enemy_limit: int = 24
+@export var spawn_min_distance: float = 16.0
+@export var spawn_max_distance: float = 26.0
+var pending_spawns: int = 12
+const HORDE_TIMES = [120.0, 240.0, 360.0, 540.0]
+var hordes_announced: Array[int] = []
+var horde_until: float = -1.0
+var horde_spawn_left: float = 0.0
+var boss_spawned: bool = false
+var boss: CharacterBody3D
+var announcement: String = ""
+var announcement_until: float = 0.0
+
+func horde_active() -> bool:
+	return elapsed_time < horde_until
+
+func announce(message: String) -> void:
+	announcement = message
+	announcement_until = elapsed_time + 5.0
+
+func update_events() -> void:
+	for i in range(HORDE_TIMES.size()):
+		if elapsed_time >= HORDE_TIMES[i] and i not in hordes_announced:
+			hordes_announced.append(i)
+			if elapsed_time < HORDE_TIMES[i] + 30.0:
+				horde_until = HORDE_TIMES[i] + 30.0
+				horde_spawn_left = 0.0
+				announce("Uma horda está a caminho")
+	# Ten-minute countdown: 180 seconds elapsed means 7:00 remaining.
+	if elapsed_time >= 180.0 and not boss_spawned:
+		spawn_boss()
+
+func spawn_boss() -> void:
+	if NavigationServer3D.map_get_iteration_id(navigation.get_navigation_map()) == 0:
+		return
+	boss = CharacterBody3D.new()
+	boss.set_script(preload("res://scripts/orc_boss.gd"))
+	boss.set("target", player)
+	var desired := player.global_position + Vector3(25, 0, 0)
+	desired.x = clampf(desired.x, -48.0, 48.0)
+	desired.z = clampf(desired.z, -48.0, 48.0)
+	desired.y = 0.0
+	boss.position = desired
+	add_child(boss)
+	boss_spawned = true
+	announce("O Chefe Orc chegou!")
 
 func _ready() -> void:
 	configure_input()
@@ -36,16 +80,11 @@ func _ready() -> void:
 	navmesh.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
 	navigation.navigation_mesh = navmesh
 	add_child(navigation)
-	add_box(Vector3(0, -0.5, 0), Vector3(60, 1, 60), Color("31485a"))
-	for i in range(6):
-		add_box(Vector3(-12, 0.5 + i * 0.3, -3 - i * 3), Vector3(5, 1 + i * 0.6, 2.5), Color("4e918d"))
-	for pos in [Vector3(9, 1, -7), Vector3(15, 2, -12), Vector3(8, 3, -18)]:
-		add_box(pos, Vector3(4, pos.y * 2, 4), Color("687bc0"))
-	for i in range(5):
-		add_box(Vector3(-8 + i * 4, 0.1, 9), Vector3(2, 0.2, 2), Color("e4ad56"))
+	preload("res://scripts/forest.gd").populate(self)
 	navigation.bake_navigation_mesh(false)
 	player = preload("res://scenes/player.tscn").instantiate()
 	player.position = Vector3(0, 2, 0)
+	player.mouse_sensitivity = preload("res://scripts/game_options.gd").mouse_sensitivity
 	add_child(player)
 	player.connect("difficulty_changed", update_difficulty)
 	var hud := CanvasLayer.new()
@@ -74,15 +113,32 @@ func spawn_magnet(pos: Vector3) -> void:
 func _physics_process(delta: float) -> void:
 	if not is_instance_valid(player) or player.get("dead"):
 		return
-	spawn_left -= delta
 	elapsed_time += delta
+	update_events()
+	if horde_active():
+		horde_spawn_left -= delta
+		if horde_spawn_left <= 0.0:
+			horde_spawn_left += effective_spawn_interval() / 3.0
+			if get_tree().get_nodes_in_group("enemies").size() + pending_spawns < horde_enemy_limit:
+				pending_spawns += 1
 	var next_stage := maxi(0, int((elapsed_time - 600.0) / 300.0))
 	if next_stage != overtime_stage:
 		overtime_stage = next_stage
 		update_difficulty(player.get("difficulty_bonus"))
-	if spawn_left <= 0.0:
-		spawn_left = effective_spawn_interval()
-		spawn_wave()
+	# Retry failed placements when navigation is ready; one replacement per kill.
+	# Spread instantiation across frames instead of building twelve models at once.
+	var room := horde_enemy_limit - get_tree().get_nodes_in_group("enemies").size()
+	for i in range(mini(pending_spawns, mini(1, maxi(0, room)))):
+		if not spawn_enemy():
+			break
+		pending_spawns -= 1
+
+func enemy_defeated() -> void:
+	if horde_active():
+		var room := horde_enemy_limit - get_tree().get_nodes_in_group("enemies").size() - pending_spawns + 1
+		pending_spawns += clampi(room, 0, 3)
+	else:
+		pending_spawns += 1
 
 func effective_wave_size() -> int:
 	return 1 + int(player.get("difficulty_bonus") * 3 / 10.0)
@@ -108,10 +164,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if is_instance_valid(player) and player.get("dead") and event.is_action_pressed("restart"):
 		get_tree().reload_current_scene()
 
-func spawn_enemy() -> void:
+func spawn_enemy() -> bool:
 	var map := navigation.get_navigation_map()
 	if NavigationServer3D.map_get_iteration_id(map) == 0:
-		return
+		return false
 	for attempt in range(16):
 		var angle := randf() * TAU
 		var radius := randf_range(spawn_min_distance, spawn_max_distance)
@@ -139,9 +195,10 @@ func spawn_enemy() -> void:
 		enemy.position = point + Vector3.UP * 0.1
 		add_child(enemy)
 		enemy.call("apply_difficulty", player.get("difficulty_bonus"), overtime_multiplier())
-		return
+		return true
+	return false
 
-func add_box(pos: Vector3, size: Vector3, color: Color) -> void:
+func add_box(pos: Vector3, size: Vector3, color: Color) -> StaticBody3D:
 	var body := StaticBody3D.new()
 	body.position = pos
 	var shape := CollisionShape3D.new()
@@ -155,6 +212,44 @@ func add_box(pos: Vector3, size: Vector3, color: Color) -> void:
 	visual.mesh = mesh
 	var material := StandardMaterial3D.new()
 	material.albedo_color = color
+	visual.material_override = material
+	body.add_child(visual)
+	navigation.add_child(body)
+	return body
+
+func add_structure(pos: Vector3, size: Vector3, color: Color, direction: Vector3) -> void:
+	add_box(pos, size, color)
+	var height := pos.y + size.y * 0.5
+	var edge := pos + direction * (size.x * 0.5 if absf(direction.x) > 0.5 else size.z * 0.5)
+	edge.y = 0.0
+	var run := height * 1.8
+	var width := 2.6
+	var vertices := PackedVector3Array([
+		Vector3(-width / 2, 0, 0), Vector3(width / 2, 0, 0),
+		Vector3(-width / 2, height, 0), Vector3(width / 2, height, 0),
+		Vector3(-width / 2, 0, run), Vector3(width / 2, 0, run)
+	])
+	var body := StaticBody3D.new()
+	body.name = "ClimbRamp"
+	body.add_to_group("climb_routes")
+	body.position = edge
+	body.rotation.y = atan2(direction.x, direction.z)
+	var collision := CollisionShape3D.new()
+	var shape := ConvexPolygonShape3D.new()
+	shape.points = vertices
+	collision.shape = shape
+	body.add_child(collision)
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	# Godot usa faces em sentido horario: o topo precisa apontar para fora.
+	# A ordem invertida ocultava a superficie inclinada pelo backface culling.
+	for index in [2, 3, 5, 2, 5, 4, 0, 2, 4, 1, 5, 3, 0, 1, 3, 0, 3, 2, 0, 4, 5, 0, 5, 1]:
+		surface.add_vertex(vertices[index])
+	surface.generate_normals()
+	var visual := MeshInstance3D.new()
+	visual.mesh = surface.commit()
+	var material := StandardMaterial3D.new()
+	material.albedo_color = color.lightened(0.15)
 	visual.material_override = material
 	body.add_child(visual)
 	navigation.add_child(body)

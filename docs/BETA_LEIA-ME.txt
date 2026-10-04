@@ -1,21 +1,18 @@
-CHAOSBOUND PROTOTYPE — BETA 0.1.0
+﻿CHAOSBOUND PROTOTYPE - BETA 0.2.0
 
-Como jogar:
-1. Extraia todos os arquivos do ZIP para uma pasta.
-2. Abra Chaosbound-Beta.exe. Nao e necessario instalar a Godot.
+Extraia o ZIP e abra Chaosbound-Beta.exe. Nao precisa instalar Godot.
+Windows 64 bits; OpenGL 3.3 ou superior. Executavel sem assinatura digital.
 
-Controles:
-WASD: andar
-Mouse: girar camera
-Espaco: pular
-Esc: inventario e status / voltar ao jogo
-Enter: reiniciar apos morrer
+Controles: WASD andar, mouse camera, Espaco pular, Esc inventario/pausa,
+Enter reiniciar apos morrer. Menu inicial: Jogar, Opcoes e Sair.
 
-Ataques sao automaticos. Colete XP para subir de nivel e escolha melhorias.
-Voce comeca com o arco; corte frontal e aura podem aparecer nas escolhas.
+Armas: Arco, Espada, Aura e Adaga reversa. Ataques automaticos.
+Cristais e melhorias por nivel, com Banir, Passar e Atualizar.
+Orb comum: 10 XP; maior: 20 XP. Drop base: 30%.
+Cristal do Conhecimento aumenta drop e chance de orb maior.
+Hordas por 30 segundos em 8:00, 6:00, 4:00 e 1:00 restantes.
+Chefe Orc: surge em 7:00 restantes, com 100000 de vida.
 
-Esta e uma versao beta em desenvolvimento, com arte provisoria e balanceamento experimental.
-Windows 64 bits, com suporte a OpenGL 3.3 ou superior.
-O executavel ainda nao possui assinatura digital de publicador.
-
-Feedback e codigo: https://github.com/Theuus12/chaosboundprototipe
+Arte original facetada, floresta e animacoes articuladas.
+Beta experimental; desempenho depende do computador.
+Codigo e feedback: https://github.com/Theuus12/chaosboundprototipe

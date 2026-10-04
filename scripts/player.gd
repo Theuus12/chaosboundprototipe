@@ -14,6 +14,7 @@ signal difficulty_changed(total_percent: int)
 @export var weapon_damage: int = 100
 @export var slash_interval: float = 2.0
 @export var slash_damage: int = 100
+@export var base_collection_radius: float = 3.5
 var slash_left: float = 2.0
 var shot_left: float = 2.0
 var level: int = 1
@@ -30,7 +31,8 @@ var magnets_collected: int = 0
 var weapons: Dictionary = {
 	10: {"unlocked": true, "level": 1, "damage": 0.0, "speed": 0.0, "projectiles": 0.0},
 	11: {"unlocked": false, "level": 0, "damage": 0.0, "speed": 0.0, "area": 0.0, "projectiles": 0.0},
-	12: {"unlocked": false, "level": 0, "damage": 0.0, "speed": 0.0, "area": 0.0}
+	12: {"unlocked": false, "level": 0, "damage": 0.0, "speed": 0.0, "area": 0.0},
+	26: {"unlocked": false, "level": 0, "damage": 0.0, "speed": 0.0, "projectiles": 0.0, "projectile_speed": 0.0, "bounces": 0.0}
 }
 
 func apply_weapon_upgrade(weapon: int, stats: Dictionary, developer: bool = false) -> bool:
@@ -51,11 +53,11 @@ func apply_weapon_upgrade(weapon: int, stats: Dictionary, developer: bool = fals
 	return true
 
 func effective_weapon_damage(weapon: int) -> int:
-	var base := 50 if weapon == 12 else (weapon_damage if weapon == 10 else slash_damage)
-	return roundi(base * (1.0 + weapons[weapon].damage / 100.0))
+	var base := 100 if weapon == 26 else (50 if weapon == 12 else (weapon_damage if weapon == 10 else slash_damage))
+	return preload("res://scripts/combat_stats.gd").damage(base, weapons[weapon].damage, tome_bonus(15))
 
 func weapon_radius(weapon: int, base: float) -> float:
-	return base * sqrt(1.0 + weapons[weapon].area / 100.0)
+	return base * sqrt(1.0 + (weapons[weapon].area * 3.0 + tome_bonus(17)) / 100.0)
 
 func effective_slash_interval() -> float:
 	return maxf(0.05, slash_interval / (1.0 + (attack_speed_bonus + weapons[11].speed) / 100.0))
@@ -67,8 +69,124 @@ func slash_count() -> int:
 	return 1 + int((projectile_bonus_tenths + roundi(weapons[11].projectiles * 10.0)) / 10.0)
 
 var firing: bool = false
+var dagger_left: float = 0.0
+
+func nearest_enemy(origin: Vector3, excluded: Array[int] = []) -> Node3D:
+	var nearest: Node3D = null
+	var best := INF
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		if enemy.is_queued_for_deletion() or enemy.get("health") <= 0 or enemy.get_instance_id() in excluded:
+			continue
+		var distance := origin.distance_squared_to(enemy.global_position)
+		if distance < best:
+			best = distance
+			nearest = enemy
+	return nearest
+
+func effective_dagger_interval() -> float:
+	return maxf(0.1, 1.6 / (1.0 + (attack_speed_bonus + weapons[26].speed) / 100.0))
+
+func shoot_dagger() -> void:
+	for i in range(dagger_count()):
+		fire_dagger()
+
+func dagger_count() -> int:
+	return 1 + int((projectile_bonus_tenths + roundi(weapons[26].projectiles * 10.0)) / 10.0)
+
+func dagger_hits() -> int:
+	return maxi(1, weapons[26].level + int(weapons[26].bounces))
+
+func dagger_bounce_damage() -> int:
+	return preload("res://scripts/combat_stats.gd").damage(30.0, weapons[26].damage, tome_bonus(15))
+
+func fire_dagger() -> void:
+	var enemy := nearest_enemy(global_position)
+	if enemy == null:
+		return
+	var dagger := Node3D.new()
+	dagger.set_script(preload("res://scripts/reverse_dagger.gd"))
+	dagger.set("player", self)
+	dagger.set("target", enemy)
+	dagger.set("hits_left", dagger_hits())
+	dagger.set("damage", effective_weapon_damage(26))
+	dagger.set("bounce_damage", dagger_bounce_damage())
+	dagger.set("speed", 28.0 * (1.0 + (tome_bonus(21) + weapons[26].projectile_speed) / 100.0))
+	get_tree().current_scene.add_child(dagger)
+	dagger.global_position = global_position + Vector3.UP * 0.8
 var cutting: bool = false
-const BUFF_NAMES = ["Velocidade de ataque", "Quantidade de Projetil", "Aumento de XP", "Dificuldade", "Velocidade de movimento", "Sorte"]
+const Tomes = preload("res://scripts/tomes.gd")
+const BUFF_NAMES = Tomes.NAMES
+var tome_bonuses: Dictionary = {}
+var chaos_results: Dictionary = {}
+var base_max_health: int = 100
+var shield: float = 0.0
+var shield_delay: float = 0.0
+var regen_credit: float = 0.0
+var heal_credit: float = 0.0
+var coins: float = 0.0
+
+func tome_bonus(kind: int) -> float:
+	return float(tome_bonuses.get(kind, 0.0))
+
+func max_shield() -> float:
+	return max_health * tome_bonus(8) / 100.0
+
+func collection_radius() -> float:
+	return base_collection_radius * (1.0 + tome_bonus(24) / 100.0)
+
+func effect_duration(base: float) -> float:
+	return base * (1.0 + tome_bonus(18) / 100.0)
+
+func heal(amount: float) -> void:
+	if dead or amount <= 0.0:
+		return
+	heal_credit += amount
+	var whole := floori(heal_credit)
+	heal_credit -= whole
+	var previous_health := health
+	health = mini(max_health, health + whole)
+	preload("res://scripts/combat_number.gd").show_number(self, health - previous_health, true)
+	if health == max_health:
+		heal_credit = 0.0
+	if is_instance_valid(health_bar):
+		health_bar.call("set_health", health, max_health)
+
+func update_survival(delta: float) -> void:
+	regen_credit += delta * max_health * tome_bonus(7) / 500.0
+	if regen_credit >= 1.0:
+		var whole := floori(regen_credit)
+		regen_credit -= whole
+		heal(whole)
+	shield_delay = maxf(0.0, shield_delay - delta)
+	if shield_delay <= 0.0:
+		shield = minf(max_shield(), shield + delta * max_shield() / 2.0)
+
+func apply_tome_effect(kind: int, percent: int) -> void:
+	if kind == 25:
+		tome_bonuses[25] = tome_bonus(25) + percent
+		var options: Array[int] = [6, 7, 8, 9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+		var chosen: int = options.pick_random()
+		chaos_results[chosen] = float(chaos_results.get(chosen, 0.0)) + percent
+		apply_tome_effect(chosen, percent)
+		return
+	tome_bonuses[kind] = tome_bonus(kind) + percent
+	if kind == 6:
+		var previous := max_health
+		max_health = roundi(base_max_health * (1.0 + tome_bonus(6) / 100.0))
+		heal(max_health - previous)
+	if kind == 8:
+		shield = max_shield()
+
+func hit_enemy(enemy: Node3D, damage: int, critical_roll: float = -1.0) -> void:
+	if not is_instance_valid(enemy) or enemy.is_queued_for_deletion() or enemy.get("health") <= 0:
+		return
+	var roll := randf() if critical_roll < 0.0 else critical_roll
+	var multiplier := preload("res://scripts/combat_stats.gd").critical_multiplier(tome_bonus(16), roll)
+	var dealt := mini(int(enemy.get("health")), roundi(damage * multiplier))
+	enemy.call("take_damage", dealt)
+	heal(dealt * tome_bonus(20) / 100.0)
+	if tome_bonus(19) > 0.0 and enemy.has_method("apply_knockback"):
+		enemy.call("apply_knockback", global_position, 4.0 * (1.0 + tome_bonus(19) / 100.0))
 var item_slots: Array[String] = ["Arco", "", "", ""]
 var buff_slots: Array[int] = []
 var buff_stacks: Dictionary = {}
@@ -89,17 +207,23 @@ func buff_value(kind: int) -> String:
 		3: return "+%d%%" % difficulty_bonus
 		4: return "+%d%%" % movement_speed_bonus
 		5: return "+%d%%" % luck_bonus
-	return ""
+	return "+%.0f%%" % tome_bonus(kind)
 
-func collect_xp() -> void:
-	xp += 20
+func xp_drop_chance() -> float:
+	return clampf(0.30 + extra_xp_chance / 100.0, 0.0, 1.0)
+
+func large_xp_chance() -> float:
+	return clampf(extra_xp_chance / 100.0, 0.0, 1.0)
+
+func collect_xp(amount: int = 10) -> void:
+	xp += maxi(0, amount)
 	if xp >= 100:
 		xp -= 100
 		level += 1
 		level_reached.emit(level)
 
 func apply_upgrade(kind: int, amount: float, rarity: int = 0) -> bool:
-	if kind < 0 or kind >= BUFF_NAMES.size():
+	if not BUFF_NAMES.has(kind):
 		return false
 	if kind not in buff_slots:
 		if buff_slots.size() >= 4:
@@ -123,6 +247,8 @@ func apply_upgrade(kind: int, amount: float, rarity: int = 0) -> bool:
 			movement_speed_bonus += percent
 		5:
 			luck_bonus += percent
+		_:
+			apply_tome_effect(kind, percent)
 	return true
 
 func effective_move_speed() -> float:
@@ -136,18 +262,10 @@ func projectile_count() -> int:
 
 func collect_bonus() -> void:
 	bonus_orbs += 1
+	coins += 1.0 + (tome_bonus(22) + tome_bonus(23)) / 100.0
 
 func collect_magnet() -> void:
 	magnets_collected += 1
-	var magnet_slot := -1
-	for i in range(item_slots.size()):
-		if item_slots[i].begins_with("Ima"):
-			magnet_slot = i
-			break
-	if magnet_slot < 0:
-		magnet_slot = item_slots.find("")
-	if magnet_slot >= 0:
-		item_slots[magnet_slot] = "Ima x%d" % magnets_collected
 	for pickup in get_tree().get_nodes_in_group("pickups"):
 		if not pickup.get("bonus") and not pickup.is_queued_for_deletion():
 			pickup.set("target", self)
@@ -164,6 +282,7 @@ var coyote_left: float = 0.0
 var jump_buffer: float = 0.0
 
 func _ready() -> void:
+	base_max_health = max_health
 	health = max_health
 	shot_left = attack_interval
 	slash_left = slash_interval
@@ -177,7 +296,7 @@ func _ready() -> void:
 	collider.position.y = 0.9
 	add_child(collider)
 	visual = Node3D.new()
-	visual.set_script(preload("res://scripts/archer_visual.gd"))
+	visual.set_script(preload("res://scripts/imported_archer_visual.gd"))
 	visual.name = "ArcherVisual"
 	add_child(visual)
 	var aura := Node3D.new()
@@ -215,6 +334,11 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	if dead:
 		return
+	update_survival(delta)
+	dagger_left -= delta
+	if weapons[26].unlocked and dagger_left <= 0.0:
+		shoot_dagger()
+		dagger_left = effective_dagger_interval()
 	slash_left -= delta
 	if slash_left <= 0.0 and weapons[11].unlocked:
 		perform_slash()
@@ -245,7 +369,7 @@ func _physics_process(delta: float) -> void:
 	var horizontal_speed := Vector2(velocity.x, velocity.z).length()
 	if horizontal_speed > 0.2:
 		visual.rotation.y = lerp_angle(visual.rotation.y, atan2(-velocity.x, -velocity.z), minf(delta * 14.0, 1.0))
-	visual.call("animate", delta, horizontal_speed, is_on_floor(), false)
+	visual.call("animate", delta, horizontal_speed, is_on_floor(), false, velocity.y)
 	if global_position.y < -15.0 or Input.is_action_just_pressed("reset"):
 		global_position = Vector3(0, 2, 0)
 		velocity = Vector3.ZERO
@@ -268,9 +392,16 @@ func spawn_slash() -> void:
 	slash.set_script(preload("res://scripts/slash.gd"))
 	slash.set("damage", effective_weapon_damage(11))
 	slash.set("reach", weapon_radius(11, 3.0))
+	slash.set("player", self)
+	slash.set("lifetime", effect_duration(0.22))
 	get_tree().current_scene.add_child(slash)
 	slash.global_position = global_position + Vector3.UP * 0.8
 	slash.rotation.y = visual.global_rotation.y
+	var enemy := nearest_enemy(global_position)
+	if enemy != null:
+		var direction := enemy.global_position - global_position
+		if Vector2(direction.x, direction.z).length_squared() > 0.0001:
+			slash.rotation.y = atan2(-direction.x, -direction.z)
 	slash.call("strike")
 
 func shoot_arrow() -> void:
@@ -313,15 +444,33 @@ func spawn_arrow(origin: Vector3, aim: Vector3) -> void:
 	arrow.set_script(preload("res://scripts/arrow.gd"))
 	arrow.set("direction", aim)
 	arrow.set("damage", effective_weapon_damage(10))
+	arrow.set("player", self)
+	arrow.set("speed", 32.0 * (1.0 + tome_bonus(21) / 100.0))
+	arrow.set("lifetime", effect_duration(3.0))
+	arrow.set("hit_radius", 0.04 * sqrt(1.0 + tome_bonus(17) / 100.0))
+	arrow.scale = Vector3.ONE * sqrt(1.0 + tome_bonus(17) / 100.0)
 	# Na cena raiz, as flechas nao acompanham o movimento do jogador.
 	get_tree().current_scene.add_child(arrow)
 	arrow.global_position = origin
 	arrow.look_at(origin + aim, Vector3.UP if absf(aim.y) < 0.99 else Vector3.RIGHT)
 
-func take_damage(amount: int) -> void:
+func take_damage(amount: int, attacker: Node3D = null, evasion_roll: float = -1.0) -> void:
 	if dead or damage_grace_left > 0.0 or amount <= 0:
 		return
-	health = maxi(0, health - amount)
+	var roll := randf() if evasion_roll < 0.0 else evasion_roll
+	if roll < minf(75.0, tome_bonus(9)) / 100.0:
+		damage_grace_left = damage_grace
+		return
+	var reduced := maxi(1, roundi(amount * 100.0 / (100.0 + tome_bonus(13))))
+	var absorbed := minf(shield, reduced)
+	shield -= absorbed
+	shield_delay = 5.0
+	var received := ceili(reduced - absorbed)
+	var previous_health := health
+	health = maxi(0, health - received)
+	preload("res://scripts/combat_number.gd").show_number(self, previous_health - health)
+	if received > 0 and is_instance_valid(attacker):
+		attacker.call("take_damage", roundi(received * tome_bonus(14) / 100.0))
 	damage_grace_left = damage_grace
 	health_bar.call("set_health", health, max_health)
 	if health == 0:

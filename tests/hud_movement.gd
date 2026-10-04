@@ -26,8 +26,11 @@ func run() -> void:
 	await process_frame
 	await process_frame
 	var hud := arena.get_node("GameHUD")
-	assert(hud.get("slots").size() == 8)
-	assert(hud.get("kills_label").text == "Kills: 1")
+	assert(hud.get("slots").size() == 4)
+	assert(hud.get("crystal_slots").size() == 4)
+	assert(hud.get("kills_label").text.begins_with("Kills: 1 | Moedas:"))
+	for slot in hud.get("slots"):
+		assert(slot.get_theme_color("font_color") == Color.WHITE)
 	assert(hud.get("level_label").text == "1")
 	print("HUD movement: PASS")
 	quit(0)

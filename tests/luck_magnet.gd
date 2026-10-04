@@ -33,11 +33,17 @@ func run() -> void:
 	await physics_frame
 	await physics_frame
 	assert(player.get("magnets_collected") == 1)
-	assert(orbs[0].get("magnetized") and orbs[1].get("magnetized") and not orbs[2].get("magnetized"))
-	for i in range(150):
-		await physics_frame
+	await physics_frame
+	assert(not is_instance_valid(orbs[0]) or orbs[0].is_queued_for_deletion())
+	assert(not is_instance_valid(orbs[1]) or orbs[1].is_queued_for_deletion())
+	assert(not orbs[2].get("magnetized"))
 	assert(player.get("xp") == 40)
 	assert(is_instance_valid(orbs[2]))
-	assert(player.get("item_slots")[0] == "Arco" and player.get("item_slots")[1] == "Ima x1")
+	# Yellow orbs also collect in one physics step once inside attraction range.
+	orbs[2].global_position = player.global_position + Vector3.UP * 0.45 + Vector3.RIGHT
+	orbs[2].call("_physics_process", 1.0 / 60.0)
+	assert(orbs[2].is_queued_for_deletion())
+	assert(player.get("bonus_orbs") == 1)
+	assert(player.get("item_slots") == ["Arco", "", "", ""])
 	print("Luck magnet: PASS")
 	quit(0)

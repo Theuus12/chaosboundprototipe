@@ -4,6 +4,8 @@ var direction: Vector3 = Vector3.FORWARD
 var speed: float = 32.0
 var lifetime: float = 3.0
 var damage: int = 100
+var player: CharacterBody3D
+var hit_radius: float = 0.04
 
 func _ready() -> void:
 	add_to_group("arrows")
@@ -30,13 +32,25 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 		return
 	var next := global_position + direction * speed * delta
-	var query := PhysicsRayQueryParameters3D.create(global_position, next, 1 | 4)
-	query.hit_from_inside = true
-	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	var query := PhysicsShapeQueryParameters3D.new()
+	var shape := CapsuleShape3D.new()
+	shape.radius = hit_radius
+	shape.height = global_position.distance_to(next) + 2.0 * hit_radius
+	query.shape = shape
+	var axis := direction.normalized()
+	var side := axis.cross(Vector3.UP if absf(axis.y) < 0.99 else Vector3.RIGHT).normalized()
+	query.transform = Transform3D(Basis(side, axis, side.cross(axis)), (global_position + next) * 0.5)
+	query.collision_mask = 1 | 4
+	var hits := get_world_3d().direct_space_state.intersect_shape(query)
+	hits.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return global_position.distance_squared_to(a.collider.global_position) < global_position.distance_squared_to(b.collider.global_position))
+	var hit: Dictionary = {} if hits.is_empty() else hits[0]
 	if not hit.is_empty():
 		var collider := hit.collider as Node
 		if collider and collider.is_in_group("enemies") and collider.has_method("take_damage"):
-			collider.call("take_damage", damage)
+			if is_instance_valid(player):
+				player.call("hit_enemy", collider, damage)
+			else:
+				collider.call("take_damage", damage)
 		queue_free()
 		return
 	global_position = next
