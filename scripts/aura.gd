@@ -41,4 +41,4 @@ func pulse() -> void:
 			if hit_cooldowns.has(id):
 				continue
 			hit_cooldowns[id] = player.call("effective_aura_interval")
-			player.call("hit_enemy", enemy, player.call("effective_weapon_damage", 12))
+			player.call("hit_enemy", enemy, player.call("effective_weapon_damage", 12), -1.0, 12)

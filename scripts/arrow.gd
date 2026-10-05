@@ -48,7 +48,7 @@ func _physics_process(delta: float) -> void:
 		var collider := hit.collider as Node
 		if collider and collider.is_in_group("enemies") and collider.has_method("take_damage"):
 			if is_instance_valid(player):
-				player.call("hit_enemy", collider, damage)
+				player.call("hit_enemy", collider, damage, -1.0, 10)
 			else:
 				collider.call("take_damage", damage)
 		queue_free()

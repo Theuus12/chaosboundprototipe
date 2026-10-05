@@ -15,6 +15,12 @@ var choosing: bool = false
 var banned: Array[int] = []
 var ban_mode: bool = false
 var ban_button: Button
+var skip_button: Button
+var reroll_button: Button
+var action_status: Label
+var action_uses := 0
+const ACTION_PRICES = [5, 25, 125, 225, 325, 425, 525]
+const MAX_BANS = 3
 
 func _ready() -> void:
 	layer = 10
@@ -56,18 +62,47 @@ func _ready() -> void:
 	ban_button.text = "Banir"
 	ban_button.pressed.connect(toggle_ban)
 	actions.add_child(ban_button)
-	var skip := Button.new()
-	skip.text = "Passar"
-	skip.pressed.connect(skip_level)
-	actions.add_child(skip)
-	var reroll := Button.new()
-	reroll.text = "Atualizar"
-	reroll.pressed.connect(reroll_choices)
-	actions.add_child(reroll)
+	skip_button = Button.new()
+	skip_button.pressed.connect(skip_level)
+	actions.add_child(skip_button)
+	reroll_button = Button.new()
+	reroll_button.pressed.connect(reroll_choices)
+	actions.add_child(reroll_button)
 	for action in actions.get_children():
 		action.custom_minimum_size = Vector2(160, 44)
+	action_status = Label.new()
+	action_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(action_status)
 	overlay.hide()
 	player.connect("level_reached", queue_level)
+	refresh_actions()
+
+func action_price() -> int:
+	return ACTION_PRICES[mini(action_uses, ACTION_PRICES.size() - 1)]
+
+func refresh_actions() -> void:
+	var price := action_price()
+	var affordable: bool = player.get("coins") >= price
+	ban_button.text = "Cancelar banimento" if ban_mode else "Banir (%d/3) • %d" % [banned.size(), price]
+	ban_button.disabled = not ban_mode and (not affordable or banned.size() >= MAX_BANS)
+	skip_button.text = "Passar • %d" % price
+	reroll_button.text = "Atualizar • %d" % price
+	skip_button.disabled = not affordable
+	reroll_button.disabled = not affordable
+	action_status.text = "Moedas: %.1f | Custo compartilhado: %d moedas" % [player.get("coins"), price]
+
+func pay_action() -> bool:
+	if not choosing or player.get("coins") < action_price():
+		refresh_actions()
+		return false
+	player.set("coins", player.get("coins") - action_price())
+	action_uses += 1
+	refresh_actions()
+	return true
+
+func _process(_delta: float) -> void:
+	if choosing:
+		refresh_actions()
 
 func queue_level(new_level: int) -> void:
 	pending_levels.append(new_level)
@@ -76,7 +111,7 @@ func queue_level(new_level: int) -> void:
 
 func show_next() -> void:
 	ban_mode = false
-	ban_button.text = "Banir"
+	refresh_actions()
 	choosing = true
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -87,10 +122,13 @@ func show_next() -> void:
 	var catalog: Array[int] = preload("res://scripts/tomes.gd").catalog()
 	offered.assign(player.call("eligible_buffs", catalog))
 	for weapon in [10, 11, 12, 26]:
-		if player.get("weapons")[weapon].unlocked or "" in player.get("item_slots"):
+		if player.call("can_upgrade_weapon", weapon) and (player.get("weapons")[weapon].unlocked or "" in player.get("item_slots")):
 			offered.append(weapon)
 	for kind in banned:
 		offered.erase(kind)
+	if offered.is_empty():
+		finish_level()
+		return
 	offered.shuffle()
 	if offered.size() > 3:
 		offered.resize(3)
@@ -118,8 +156,8 @@ func show_next() -> void:
 				buttons[i].add_theme_color_override(state, Rarity.COLORS[rarity])
 			continue
 		weapon_rolls.append({})
-		rolls.append(Rarity.roll_amount(kind, rarity))
-		var value := "+%.1f" % rolls[i] if kind == 1 else "+%d%%" % int(rolls[i])
+		rolls.append(preload("res://scripts/megabonk_balance.gd").crystal_amount(kind, rarity))
+		var value := preload("res://scripts/megabonk_balance.gd").describe_crystal(kind, rolls[i])
 		var slot_hint := "Melhorar cristal equipado" if kind in player.get("buff_slots") else "Equipar em um slot de cristal"
 		buttons[i].text = "%s %s\n%s\n%s" % [names[kind], value, descriptions[kind], slot_hint]
 		for state in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color"]:
@@ -131,22 +169,26 @@ func show_next() -> void:
 		heading.text += "\nSem melhorias disponíveis — use Passar"
 
 func toggle_ban() -> void:
+	if not choosing or (not ban_mode and (banned.size() >= MAX_BANS or player.get("coins") < action_price())):
+		return
 	ban_mode = not ban_mode
-	ban_button.text = "Cancelar banimento" if ban_mode else "Banir"
+	refresh_actions()
 	heading.text = "Escolha a melhoria para banir" if ban_mode else "NIVEL %d ALCANCADO!" % pending_levels[0]
 
 func reroll_choices() -> void:
-	if choosing:
+	if choosing and pay_action():
 		show_next()
 
 func skip_level() -> void:
-	if choosing:
+	if choosing and pay_action():
 		finish_level()
 
 func choose(index: int) -> void:
 	if not choosing or index < 0 or index >= offered.size():
 		return
 	if ban_mode:
+		if banned.size() >= MAX_BANS or not pay_action():
+			return
 		banned.append(offered[index])
 		show_next()
 		return

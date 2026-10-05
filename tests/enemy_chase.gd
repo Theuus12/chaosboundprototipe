@@ -7,6 +7,7 @@ func run() -> void:
 	var arena := load("res://scenes/arena.tscn").instantiate() as Node3D
 	root.add_child(arena)
 	current_scene = arena
+	arena.set_physics_process(false)
 	arena.set("spawn_left", 10000.0)
 	var player := arena.get("player") as CharacterBody3D
 	player.set("slash_left", 10000.0)

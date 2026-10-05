@@ -21,7 +21,7 @@ func _ready() -> void:
 	var top := HBoxContainer.new()
 	top.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	top.offset_left = 24
-	top.offset_right = -24
+	top.offset_right = -264
 	top.offset_top = 16
 	top.add_theme_constant_override("separation", 12)
 	root.add_child(top)
@@ -54,9 +54,19 @@ func _ready() -> void:
 	kills_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	kills_label.offset_left = -300
 	kills_label.offset_right = -24
-	kills_label.offset_top = 70
+	kills_label.offset_top = 260
 	kills_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	root.add_child(kills_label)
+	var minimap := Control.new()
+	minimap.name = "Minimap"
+	minimap.set_script(preload("res://scripts/minimap.gd"))
+	minimap.set("player", player)
+	minimap.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	minimap.offset_left = -244
+	minimap.offset_right = -24
+	minimap.offset_top = 16
+	minimap.offset_bottom = 250
+	root.add_child(minimap)
 	announcement_label = Label.new()
 	announcement_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	announcement_label.offset_top = 130
@@ -73,6 +83,7 @@ func _ready() -> void:
 	boss_label.add_theme_font_size_override("font_size", 24)
 	boss_label.add_theme_color_override("font_color", Color("ff7060"))
 	root.add_child(boss_label)
+	boss_label.hide()
 	var inventory := VBoxContainer.new()
 	inventory.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	inventory.offset_left = 24
@@ -86,7 +97,7 @@ func _ready() -> void:
 		title.text = category
 		title.custom_minimum_size.x = 52
 		row.add_child(title)
-		for i in range(4):
+		for i in range(player.get("item_slots").size() if category == "ITENS" else 4):
 			var panel := PanelContainer.new()
 			panel.custom_minimum_size = Vector2(76, 60)
 			var style := StyleBoxFlat.new()
@@ -115,6 +126,13 @@ func _ready() -> void:
 	root.add_child(death_label)
 	# Toda a interface passiva deixa os cliques chegarem ao jogo.
 	ignore_mouse(root)
+	player.inventory_changed.connect(refresh_slots)
+	refresh_slots()
+
+static func format_timer(elapsed: float) -> String:
+	var remaining := 600.0 - elapsed
+	var seconds := ceili(remaining) if remaining >= 0.0 else floori(-remaining)
+	return "%s%02d:%02d" % ["-" if remaining < 0.0 else "", int(seconds / 60.0), seconds % 60]
 
 func ignore_mouse(node: Node) -> void:
 	if node is Control:
@@ -123,19 +141,28 @@ func ignore_mouse(node: Node) -> void:
 		ignore_mouse(child)
 
 func _process(_delta: float) -> void:
+	xp_bar.max_value = player.call("xp_required")
 	xp_bar.value = player.get("xp")
+	xp_bar.tooltip_text = "XP: %d / %d" % [player.get("xp"), player.call("xp_required")]
 	level_label.text = str(player.get("level"))
 	kills_label.text = "Kills: %d | Moedas: %.1f" % [player.get("kills"), player.get("coins")]
 	var elapsed: float = get_tree().current_scene.get("elapsed_time")
 	var arena := get_tree().current_scene
 	announcement_label.text = arena.get("announcement") if elapsed < arena.get("announcement_until") else ""
-	var boss: Node = arena.get("boss")
-	boss_label.text = "CHEFE ORC — %d / 100000" % boss.get("health") if is_instance_valid(boss) and not boss.is_queued_for_deletion() else ""
-	var seconds := ceili(600.0 - elapsed) if elapsed < 600.0 else int(elapsed - 600.0)
-	timer_label.text = "%s%02d:%02d" % ["+" if elapsed >= 600.0 else "", int(seconds / 60.0), seconds % 60]
+
+	var boss_lines: PackedStringArray = []
+	for orc in get_tree().get_nodes_in_group("bosses"):
+		if not orc.is_queued_for_deletion():
+			boss_lines.append("%s — %d / %d" % [orc.get("display_name"), orc.get("health"), orc.get("max_health")])
+	boss_label.text = " | ".join(boss_lines)
+	timer_label.text = format_timer(elapsed)
 	death_label.visible = player.get("dead")
+	refresh_slots()
+
+func refresh_slots() -> void:
 	var items: Array = player.get("item_slots")
 	var buffs: Array = player.get("buff_slots")
-	for i in range(4):
+	for i in range(weapon_slots.size()):
 		weapon_slots[i].call("update_item", player, items[i])
+	for i in range(crystal_slots.size()):
 		crystal_slots[i].call("update_buff", player, buffs[i] if i < buffs.size() else -1)

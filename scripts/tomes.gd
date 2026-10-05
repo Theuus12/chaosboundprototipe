@@ -27,23 +27,27 @@ const NAMES = {
 	25: "Cristal do Caos"
 }
 const DESCRIPTIONS = {
-	0: "Aumenta a frequência dos ataques", 1: "Unidades inteiras adicionam ataques em sequência",
+	0: "Aumenta a frequência dos ataques", 1: "Adiciona flechas à salva simultânea do arco e projéteis às outras armas",
 	2: "Aumenta as chances de drop e de uma orb maior com o dobro de XP", 3: "Aumenta vida, velocidade e quantidade de monstros",
 	4: "Aumenta a velocidade de movimento", 5: "Favorece raridades maiores",
-	6: "Aumenta a vida máxima e cura a vida adicionada",
-	7: "Regenera esta porcentagem da vida máxima a cada 5 segundos",
-	8: "Escudo em % da vida máxima; recarrega após 5 segundos sem dano",
+	6: "Adiciona vida máxima e cura a vida adicionada",
+	7: "Regenera esta quantidade de vida por minuto",
+	8: "Adiciona pontos de escudo; recarrega após 5 segundos sem dano",
 	9: "Chance de evitar completamente um ataque (máximo 75%)",
 	13: "Armadura: redução = armadura / (100 + armadura)",
-	14: "Reflete esta porcentagem do dano recebido no agressor",
-	15: "Aumenta o dano de todas as armas", 16: "Chance de crítico; acima de 100% permite críticos de níveis maiores",
+	14: "Causa esta quantidade de dano ao agressor quando atingido",
+	15: "Multiplica o dano de todas as armas; bônus acumulam multiplicativamente", 16: "Chance de crítico; acima de 100% permite críticos de níveis maiores",
 	17: "Aumenta a área dos ataques e o tamanho das flechas",
 	18: "Aumenta a duração das flechas e do efeito visual dos cortes",
 	19: "Aumenta o empurrão dos ataques; concede empurrão inicial",
 	20: "Recupera esta porcentagem do dano efetivamente causado",
 	21: "Aumenta a velocidade das flechas", 22: "Aumenta o valor das moedas coletadas",
 	23: "Aumenta o valor das moedas coletadas", 24: "Aumenta o raio de atração de XP e moedas",
-	25: "Melhora um atributo aleatório a cada escolha; resultado visível no Esc"
+	25: "Melhora um atributo aleatório a cada escolha; resultado visível no Esc",
+	27: "Aumenta o multiplicador de dano dos acertos críticos",
+	28: "Aumenta a XP das orbes recolhidas pelo power-up ímã",
+	29: "Aumenta o dano contra elites e bosses",
+	30: "Aumenta a altura do salto"
 }
 
 static func catalog() -> Array[int]:

@@ -49,7 +49,7 @@ func strike() -> void:
 		if not get_world_3d().direct_space_state.intersect_ray(query).is_empty():
 			continue
 		if is_instance_valid(player):
-			player.call("hit_enemy", enemy, damage)
+			player.call("hit_enemy", enemy, damage, -1.0, 11)
 		else:
 			enemy.call("take_damage", damage)
 

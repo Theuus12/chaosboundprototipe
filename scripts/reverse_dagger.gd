@@ -55,7 +55,7 @@ func _physics_process(delta: float) -> void:
 	if global_position.distance_to(destination) < 0.15:
 		var hit_damage := damage if used.is_empty() else bounce_damage
 		used.append(target.get_instance_id())
-		player.call("hit_enemy", target, hit_damage)
+		player.call("hit_enemy", target, hit_damage, -1.0, 26)
 		hits_left -= 1
 		if hits_left <= 0:
 			queue_free()

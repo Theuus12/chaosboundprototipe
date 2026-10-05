@@ -11,6 +11,7 @@ var stride := 0.0
 var meshes: Array[MeshInstance3D] = []
 var flash_material: StandardMaterial3D
 var flashing: bool = false
+var render_batch: Node3D
 
 func _ready() -> void:
 	model = load(model_path).instantiate()
@@ -25,6 +26,19 @@ func _ready() -> void:
 	flash_material = StandardMaterial3D.new()
 	flash_material.albedo_color = Color.WHITE
 	animate(0.0, 0.0, false, false)
+	var arena := get_tree().current_scene
+	if arena != null and get_parent().is_in_group("enemies") and not get_parent().is_in_group("bosses"):
+		render_batch = arena.get_node_or_null("EnemyVisualBatch")
+		if render_batch == null:
+			render_batch = Node3D.new()
+			render_batch.name = "EnemyVisualBatch"
+			render_batch.set_script(preload("res://scripts/enemy_visual_batch.gd"))
+			arena.add_child(render_batch)
+		render_batch.call("register", self, meshes)
+
+func _exit_tree() -> void:
+	if is_instance_valid(render_batch):
+		render_batch.call("unregister", meshes)
 
 func collect_meshes(node: Node) -> void:
 	if node is MeshInstance3D:

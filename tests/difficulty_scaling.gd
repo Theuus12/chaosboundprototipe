@@ -1,0 +1,17 @@
+extends SceneTree
+func _initialize() -> void:
+	var scaling = preload("res://scripts/difficulty_scaling.gd")
+	var start = scaling.multipliers(0)
+	var middle = scaling.multipliers(300)
+	var end = scaling.multipliers(600)
+	var extra = scaling.multipliers(660)
+	assert(start.health == 1 and start.speed == 1 and start.damage == 1)
+	assert(is_equal_approx(middle.health, 1.5))
+	assert(is_equal_approx(end.health, 2.0))
+	assert(is_equal_approx(end.damage, 1.28))
+	assert(is_equal_approx(end.speed, 1.25))
+	assert(extra.health > end.health and extra.damage > end.damage)
+	assert(scaling.multipliers(300, 20).health > middle.health)
+	assert(extra.knockback > end.knockback)
+	print("Minute scaling, curse and continuous final swarm escalation PASS")
+	quit()

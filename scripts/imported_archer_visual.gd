@@ -25,6 +25,8 @@ var vertical_speed: float = 0.0
 var animation_state: String = "idle"
 var falling_blend: float = 0.0
 var cloth: Node
+var chest: Node3D
+var idle_blend: float = 0.0
 
 func joint(joint_name: String, origin: Vector3, prefixes: Array[String], parent_joint: Node3D = null) -> Node3D:
 	var pivot := Node3D.new()
@@ -46,6 +48,7 @@ func _ready() -> void:
 	model = preload("res://assets/characters/archer/archer.glb").instantiate()
 	model.rotation.y = PI
 	add_child(model)
+	chest = joint("BreathingChest", Vector3(0, 1.12, 0), ["Torso", "Tunic"])
 	left_arm = joint("LeftShoulder", Vector3(-0.24, 1.42, 0), ["Sleeve.L", "Sleeve trim.L", "Sleeve trim leather.L", "Arm.L"])
 	right_arm = joint("RightShoulder", Vector3(0.24, 1.42, 0), ["Sleeve.R", "Sleeve trim.R", "Sleeve trim leather.R", "Arm.R"])
 	left_elbow = joint("LeftElbow", Vector3(-0.59, 1.42, 0), ["Elbow.L", "Forearm.L", "Bracer.L", "Glove.L", "Fingers.L", "Thumb.L"], left_arm)
@@ -92,6 +95,12 @@ func _process(delta: float) -> void:
 	air_pose = lerpf(air_pose, 0.0 if target_grounded else 1.0, blend)
 	falling_blend = lerpf(falling_blend, 1.0 if vertical_speed <= 0.1 and not target_grounded else 0.0, blend)
 	landing *= exp(-delta * 14.0)
+	idle_blend = lerpf(idle_blend, 1.0 if target_grounded and target_speed < 0.2 and not target_dashing else 0.0, blend)
+	# Slow chest expansion and shoulder lift; feet retain their standing pose.
+	var breath := sin(elapsed * TAU / 3.2) * idle_blend
+	chest.scale = Vector3(1.0 + breath * 0.012, 1.0 + breath * 0.016, 1.0 + breath * 0.018)
+	left_arm.position.y = 1.42 + breath * 0.006
+	right_arm.position.y = 1.42 + breath * 0.006
 	var swing := sin(phase) * stride
 	left_leg.rotation.x = lerpf(left_leg.rotation.x, swing * 0.90 - air_pose * 1.00 + falling_blend * 0.25 - landing * 0.38, pose_blend)
 	right_leg.rotation.x = lerpf(right_leg.rotation.x, -swing * 0.90 - air_pose * 0.65 + falling_blend * 0.22 - landing * 0.38, pose_blend)
@@ -103,15 +112,15 @@ func _process(delta: float) -> void:
 	var arm_swing := sin(phase - 0.22) * stride
 	left_arm.rotation.x = lerpf(left_arm.rotation.x, -arm_swing * 0.65 - air_pose * 0.65, pose_blend)
 	right_arm.rotation.x = lerpf(right_arm.rotation.x, arm_swing * 0.65 - air_pose * 0.65, pose_blend)
-	left_arm.rotation.z = lerpf(left_arm.rotation.z, 1.28 - air_pose * 0.55, pose_blend)
-	right_arm.rotation.z = lerpf(right_arm.rotation.z, -1.28 + air_pose * 0.55, pose_blend)
+	left_arm.rotation.z = lerpf(left_arm.rotation.z, 1.28 - air_pose * 0.55 - breath * 0.018, pose_blend)
+	right_arm.rotation.z = lerpf(right_arm.rotation.z, -1.28 + air_pose * 0.55 + breath * 0.018, pose_blend)
 	left_elbow.rotation.y = lerpf(left_elbow.rotation.y, 0.14 + stride * 0.85 + arm_swing * 0.12 + air_pose * 0.45, pose_blend)
 	right_elbow.rotation.y = lerpf(right_elbow.rotation.y, -(0.14 + stride * 0.85 - arm_swing * 0.12 + air_pose * 0.45), pose_blend)
 	# A cosine bounce has no sharp cusp at each footfall.
 	var bounce := (1.0 - cos(phase * 2.0)) * stride * 0.032
-	var breathing := sin(elapsed * 2.2) * (1.0 - stride) * (1.0 - air_pose) * 0.004
+	var breathing := breath * 0.006
 	model.position.y = lerpf(model.position.y, bounce + breathing - landing * 0.060, pose_blend)
-	model.rotation.x = lerpf(model.rotation.x, stride * 0.14 - air_pose * 0.06 + landing * 0.04, blend)
+	model.rotation.x = lerpf(model.rotation.x, stride * 0.14 + air_pose * 0.12 + landing * 0.04, blend)
 	model.rotation.z = lerpf(model.rotation.z, sin(phase) * stride * 0.032, blend)
 	var body := get_parent() as CharacterBody3D
 	var cloth_velocity := body.velocity if body != null else Vector3(0.0, vertical_speed, -target_speed)

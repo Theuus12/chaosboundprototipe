@@ -1,7 +1,7 @@
 """Keep editable Blender sources; batch glTF surfaces by articulated parent."""
 import bpy, os, collections
 root=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','assets','characters'))
-for folder,stem in [('goblin','goblin'),('orc_boss','orc_boss')]:
+for folder,stem in [('goblin','goblin'),('orc_boss','orc_boss'),('orc_soldier','orc_soldier'),('orc_commander','orc_commander'),('skeleton','skeleton')]:
     bpy.ops.wm.open_mainfile(filepath=os.path.join(root,folder,stem+'.blend'))
     material=bpy.data.materials.new('Faceted vertex colors'); material.use_nodes=True
     shader=next(n for n in material.node_tree.nodes if n.type=='BSDF_PRINCIPLED')

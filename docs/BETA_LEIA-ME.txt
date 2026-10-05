@@ -1,18 +1,20 @@
-﻿CHAOSBOUND PROTOTYPE - BETA 0.2.0
+﻿CHAOSBOUND PROTOTYPE - BETA 0.3.0
 
 Extraia o ZIP e abra Chaosbound-Beta.exe. Nao precisa instalar Godot.
 Windows 64 bits; OpenGL 3.3 ou superior. Executavel sem assinatura digital.
 
-Controles: WASD andar, mouse camera, Espaco pular, Esc inventario/pausa,
-Enter reiniciar apos morrer. Menu inicial: Jogar, Opcoes e Sair.
+Controles: WASD andar, mouse camera, Espaco pular, E interagir,
+Esc inventario/pausa, Enter reiniciar apos morrer.
 
-Armas: Arco, Espada, Aura e Adaga reversa. Ataques automaticos.
-Cristais e melhorias por nivel, com Banir, Passar e Atualizar.
-Orb comum: 10 XP; maior: 20 XP. Drop base: 30%.
-Cristal do Conhecimento aumenta drop e chance de orb maior.
-Hordas por 30 segundos em 8:00, 6:00, 4:00 e 1:00 restantes.
-Chefe Orc: surge em 7:00 restantes, com 100000 de vida.
+Mapa ampliado, colinas, minimapa e quinze totens com buffs gratuitos.
+Arco, Espada, Aura e Adaga reversa; dois espacos iniciais para armas.
+Cristais separados dos buffs dos totens; escudo e pulos extras.
+XP: orbes de 10, 30 e 50 pontos. Custo aumenta a cada dez niveis.
+Seis monstros a cada dois segundos; teto normal 50, hordas 100.
+Goblins ate cinco minutos; depois esqueletos e liches.
+Altar do Rei Ossuario no nordeste: pressione E para invocar o boss de 50000 HP.
+Derrota-lo libera os Olhos Infernais.
+Banir, Passar e Atualizar: custos progressivos de 5 a 525 moedas.
 
-Arte original facetada, floresta e animacoes articuladas.
 Beta experimental; desempenho depende do computador.
 Codigo e feedback: https://github.com/Theuus12/chaosboundprototipe

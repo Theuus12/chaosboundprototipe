@@ -1,24 +1,25 @@
-﻿# Chaosbound - beta 0.2.0
+# Chaosbound - beta 0.3.0
 
-[Baixar beta para Windows 64 bits](https://github.com/Theuus12/chaosboundprototipe/releases/download/v0.2.0-beta/Chaosbound-Beta-0.2.0-Windows-x64.zip)
+[Baixar beta para Windows 64 bits](https://github.com/Theuus12/chaosboundprototipe/releases/download/v0.3.0-beta/Chaosbound-Beta-0.3.0-Windows-x64.zip)
 
 Extraia o ZIP e abra Chaosbound-Beta.exe. Nao precisa instalar Godot.
 
 ## Conteudo atual
 
-- Menu inicial com Jogar, Opcoes e Sair.
-- Floresta com grama, tres tipos de arvores e arbustos.
-- Arqueiro, goblins e chefe orc modelados no Blender, com animacoes articuladas.
-- Arco, Espada que mira no inimigo mais proximo, Aura e Adaga reversa com ricochetes.
-- Cristais com icones, melhorias por raridade, Banir, Passar e Atualizar.
-- Orbs comuns com 10 XP e maiores com 20 XP. Drop base de 30%; Cristal do Conhecimento aumenta drop e chance de orb maior.
-- Hordas durante 30 segundos em 8:00, 6:00, 4:00 e 1:00 restantes; limite de 24 inimigos.
-- Chefe de 100000 de vida e cinco vezes a altura do jogador em 7:00 restantes.
-- Monstros com nove malhas por modelo e instanciacao distribuida entre frames.
+- Floresta de 360 x 360, colinas maiores, campo de visao limitado e minimapa.
+- Arco com salvas simultaneas, Espada, Aura e Adaga reversa; dois espacos iniciais para armas.
+- Quinze totens com tres escolhas gratuitas de buffs, separados dos cristais.
+- Escudo, pulos extras, regeneracao, roubo de vida e melhorias por raridade.
+- XP de 10, 30 e 50 pontos; custo por nivel cresce a cada dez niveis.
+- Grupos de seis monstros a cada dois segundos; teto de 50 no normal e 100 nas hordas.
+- Goblins ate cinco minutos; depois esqueletos e liches. Orc soldado como elite comum.
+- Altar interativo que invoca o Rei Ossuario, com 50000 HP, e libera olhos infernais ao derrota-lo.
+- Banir, Passar e Atualizar com custos progressivos em moedas; ate tres banimentos por partida.
+- Animacoes articuladas, malhas compartilhadas e navegacao sobre as colinas.
 
 ## Controles
 
-WASD: andar; mouse: camera; Espaco: pular; Esc: inventario/pausa; Enter: reiniciar apos morrer.
+WASD: andar; mouse: camera; Espaco: pular; E: interagir com totens e altar; Esc: inventario/pausa; Enter: reiniciar apos morrer.
 
 ## Desenvolvimento e exportacao
 

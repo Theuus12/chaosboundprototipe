@@ -15,5 +15,5 @@ New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
 & (Join-Path $PSScriptRoot 'godot/Godot_v4.7.2-stable_win64_console.exe') --headless --path $projectRoot --export-release 'Windows Beta' (Join-Path $outputDir 'Chaosbound-Beta.exe')
 if ($LASTEXITCODE -ne 0) { throw 'Falha na exportacao' }
 Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/BETA_LEIA-ME.txt') -Destination (Join-Path $outputDir 'LEIA-ME.txt')
-Compress-Archive -Path (Join-Path $outputDir '*') -DestinationPath (Join-Path $projectRoot 'builds/Chaosbound-Beta-0.2.0-Windows-x64.zip') -Force
+Compress-Archive -Path (Join-Path $outputDir '*') -DestinationPath (Join-Path $projectRoot 'builds/Chaosbound-Beta-0.3.0-Windows-x64.zip') -Force
 Get-ChildItem -LiteralPath $outputDir | Select-Object Name, Length

@@ -10,6 +10,7 @@ func run() -> void:
 	arena.set_physics_process(false)
 	var player: Node = arena.get("player")
 	player.set_physics_process(false)
+	player.set("coins", 100000.0)
 	var menu: Node = arena.get_node("UpgradeMenu")
 	menu.call("queue_level", 2)
 	var ban_id: int = menu.get("offered")[0]
@@ -33,11 +34,8 @@ func run() -> void:
 	menu.call("skip_level")
 	player.call("apply_weapon_upgrade", 12, {"area": 1.0})
 	assert(is_equal_approx(player.call("weapon_radius", 12, 2.5), 2.5 * sqrt(1.03)))
-	arena.free()
-	var main: Control = load("res://scenes/main_menu.tscn").instantiate()
-	root.add_child(main)
-	assert(main.get("main").get_child(1).text == "Jogar")
-	assert(main.get("main").get_child(2).text == "Opções")
-	assert(main.get("main").get_child(3).text == "Sair")
-	print("Upgrade actions: ban persistence, reroll, skip, exhaustion, area and main menu PASS")
+	arena.queue_free()
+	await process_frame
+	await process_frame
+	print("Upgrade actions: paid ban persistence, reroll, skip, exhaustion and area PASS")
 	quit()

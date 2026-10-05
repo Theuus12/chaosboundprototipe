@@ -8,15 +8,16 @@ func run() -> void:
 	root.add_child(arena)
 	current_scene = arena
 	arena.set("spawn_left", 10000.0)
+	arena.set_physics_process(false)
 	var player := arena.get("player") as CharacterBody3D
 	player.set("shot_left", 10000.0)
 	player.set("slash_left", 10000.0)
 	player.call("apply_weapon_upgrade", 10, {"projectiles": 2.0})
 	player.call("shoot_arrow")
-	assert(get_nodes_in_group("arrows").size() == 1)
+	assert(get_nodes_in_group("arrows").size() == 3)
 	for i in range(6):
 		await physics_frame
-	assert(get_nodes_in_group("arrows").size() == 1)
+	assert(get_nodes_in_group("arrows").size() == 3)
 	for i in range(20):
 		await physics_frame
 	assert(get_nodes_in_group("arrows").size() == 3)
@@ -27,5 +28,5 @@ func run() -> void:
 	var stats := arena.get_node("StatsMenu")
 	stats.call("toggle")
 	assert(stats.get("item_labels")[1].get_parent().tooltip_text.contains("Quantidade de projetil"))
-	print("Weapon sequence: PASS")
+	print("Simultaneous arrow volley: PASS")
 	quit(0)

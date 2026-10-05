@@ -37,7 +37,7 @@ func run() -> void:
 	assert(not is_instance_valid(orbs[0]) or orbs[0].is_queued_for_deletion())
 	assert(not is_instance_valid(orbs[1]) or orbs[1].is_queued_for_deletion())
 	assert(not orbs[2].get("magnetized"))
-	assert(player.get("xp") == 40)
+	assert(player.get("xp") == 20)
 	assert(is_instance_valid(orbs[2]))
 	# Yellow orbs also collect in one physics step once inside attraction range.
 	orbs[2].global_position = player.global_position + Vector3.UP * 0.45 + Vector3.RIGHT

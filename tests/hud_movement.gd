@@ -26,7 +26,7 @@ func run() -> void:
 	await process_frame
 	await process_frame
 	var hud := arena.get_node("GameHUD")
-	assert(hud.get("slots").size() == 4)
+	assert(hud.get("slots").size() == 2)
 	assert(hud.get("crystal_slots").size() == 4)
 	assert(hud.get("kills_label").text.begins_with("Kills: 1 | Moedas:"))
 	for slot in hud.get("slots"):

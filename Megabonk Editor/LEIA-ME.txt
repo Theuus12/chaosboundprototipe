@@ -1,0 +1,21 @@
+MEGABONK — EDITOR DE MEMÓRIA
+
+Execute Iniciar.cmd ou MegabonkEditor.exe. Requer Windows de 64 bits e .NET Framework 4.x.
+1. Abra uma partida do Megabonk e clique em Conectar ao jogo.
+2. Escolha Inteiro para números inteiros, ou float/double para decimais.
+3. Digite o valor atual que aparece no jogo e clique em Nova busca.
+4. Altere esse valor jogando (por exemplo, ganhe ou gaste moedas).
+5. Digite o novo valor e clique em Refinar. Repita até restarem poucos endereços.
+6. Selecione um endereço, digite o valor desejado e clique em Aplicar valor.
+   O editor mostra o valor atual antes da confirmação.
+
+O editor não altera os arquivos da instalação ou saves diretamente. Ele escreve
+somente na memória do Megabonk aberto. O próprio jogo pode salvar os efeitos.
+Endereços deixam de valer quando você reinicia o jogo; refaça a busca.
+Vida e dano podem ser calculados, arredondados ou armazenados de outra forma.
+O programa não identifica automaticamente qual resultado corresponde ao atributo.
+Uma alteração em endereço incorreto pode travar a partida: comece com mudanças pequenas.
+Não existe garantia de que um atributo específico seja editável por busca exata.
+Nenhuma proteção ou anticheat é desativado ou contornado.
+
+Código-fonte incluído em Editor.cs. O editor só conecta ao processo Megabonk.

@@ -10,7 +10,9 @@ func run() -> void:
 	arena.set("spawn_left", 10000.0)
 	var navigation: NavigationRegion3D = arena.get("navigation")
 	var ground := navigation.get_node("GrassGround")
-	assert(ground.get_child(0).shape.size == Vector3(120, 1, 120))
+	assert(ground.get_child(0).shape is ConcavePolygonShape3D)
+	assert(preload("res://scripts/forest.gd").ground_height(-24, -20) > 1.0)
+	assert(get_nodes_in_group("buildings").size() == 6)
 	assert(ground.get_child(1).material_override.albedo_texture != null)
 	var types := {}
 	for tree in get_nodes_in_group("trees"):
@@ -27,5 +29,5 @@ func run() -> void:
 	assert(point.distance_to(Vector3(50, 0, 50)) < 2.0)
 	arena.call("spawn_enemy")
 	assert(not get_nodes_in_group("enemies").is_empty())
-	print("Forest: 4x area, grass, three tree types, bushes and enemy navigation PASS")
+	print("Forest: expanded terrain, grass, three tree types, bushes and enemy navigation PASS")
 	quit()
